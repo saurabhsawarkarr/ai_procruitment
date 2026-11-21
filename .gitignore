@@ -48,5 +48,8 @@ Thumbs.db
 dataset/upload_*
 
 # Temporary scripts
+*.exe
+cloudflared.exe
+backend/cloudflared.exe
 check_tags.py
 test_zip.py

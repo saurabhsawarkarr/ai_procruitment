@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: aerchain-procurement-mvp
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: oregon
+    autoDeploy: true

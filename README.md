@@ -29,16 +29,29 @@ python backend/tests/test_api_endpoints.py
 ```
 Or run individually:
 ```bash
-# Terminal 1: FastAPI Backend (Port 8000)
+# Terminal 1: FastAPI Backend (Port 8000 - also serves built React UI)
 cd backend
-python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
-# Terminal 2: Vite React Frontend (Port 5173)
+# Terminal 2: Vite React Frontend (Port 5173 for hot-reloading dev)
 cd frontend
 npm.cmd run dev
 ```
-* Interactive Cockpit: `http://localhost:5173`
-* Swagger API Documentation: `http://127.0.0.1:8000/docs`
+* Interactive Cockpit: `http://localhost:5173` (or `http://localhost:8000` for production unified build)
+* Swagger API Documentation: `http://localhost:8000/docs`
+
+### 1.4. Share Live MVP (Public HTTPS URL)
+
+#### Method 1: Instant 1-Click Public Tunnel (Share in seconds)
+Double-click `share_live.bat` or run:
+```bash
+.\share_live.bat
+```
+This launches a secure Cloudflare Tunnel that exposes the unified FastAPI web app + React UI on an instant public `https://*.trycloudflare.com` URL that anyone on mobile or desktop can access without creating an account.
+
+#### Method 2: Permanent 24/7 Cloud Deployment (Render / Railway / Docker)
+- **Render.com (1-Click Blueprint)**: Connect repository `https://github.com/saurabhsawarkarr/ai_procruitment.git` and deploy with `render.yaml` (uses the included multi-stage `Dockerfile`).
+- **Railway / Fly.io / GCP Cloud Run**: Point to the root `Dockerfile` to deploy a single production container hosting both frontend and backend.
 
 ---
 
