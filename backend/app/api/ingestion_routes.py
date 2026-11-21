@@ -52,21 +52,28 @@ def get_ingestion_status() -> Dict[str, Any]:
         flag_type = "success"
         status_label = "Processed"
 
-        if v_id == "VEND-001":
-            edge_flag = "Multi-sheet Excel layout; Ex-Works Bengaluru terms (OEM freight +₹1,500/unit normalized)."
-            flag_type = "info"
-        elif v_id == "VEND-002":
-            edge_flag = "Footnote #3 hides 4.5% turnover rebate (> ₹1.5 Cr) + 8% offloading & handling surcharge."
-            flag_type = "warning"
-            status_label = "Review needed"
-        elif v_id == "VEND-004":
-            edge_flag = "Partial bid: Lines 28–30 (Enterprise Infrastructure) left blank; quarantined with zero-allocation flag."
-            flag_type = "warning"
-            status_label = "Review needed"
-        elif v_id == "VEND-005":
-            edge_flag = "Currency & indexation escalation: 2025 base + 3.5% USD/INR escalation factor; peripheral rate blending."
-            flag_type = "warning"
-            status_label = "Review needed"
+        if not normalizer_engine.is_custom_mode:
+            if v_id == "VEND-001":
+                edge_flag = "Multi-sheet Excel layout; Ex-Works Bengaluru terms (OEM freight +₹1,500/unit normalized)."
+                flag_type = "info"
+            elif v_id == "VEND-002":
+                edge_flag = "Footnote #3 hides 4.5% turnover rebate (> ₹1.5 Cr) + 8% offloading & handling surcharge."
+                flag_type = "warning"
+                status_label = "Review needed"
+            elif v_id == "VEND-004":
+                edge_flag = "Partial bid: Lines 28–30 (Enterprise Infrastructure) left blank; quarantined with zero-allocation flag."
+                flag_type = "warning"
+                status_label = "Review needed"
+            elif v_id == "VEND-005":
+                edge_flag = "Currency & indexation escalation: 2025 base + 3.5% USD/INR escalation factor; peripheral rate blending."
+                flag_type = "warning"
+                status_label = "Review needed"
+            elif lines_quoted < 30:
+                edge_flag = f"Partial bid: Only {lines_quoted} of 30 SKUs quoted."
+                flag_type = "warning"
+                status_label = "Review needed"
+            else:
+                edge_flag = f"Dynamically parsed from {os.path.splitext(source_file)[1].upper()}; 30/30 items mapped."
         elif lines_quoted < 30:
             edge_flag = f"Partial bid: Only {lines_quoted} of 30 SKUs quoted."
             flag_type = "warning"
@@ -120,13 +127,14 @@ async def upload_vendor_file(vendor_id: Optional[str] = None, file: UploadFile =
     if ext not in allowed_exts:
         raise HTTPException(status_code=400, detail=f"Unsupported format '{ext}'. Allowed: {allowed_exts}")
 
-    # Ensure baseline quotes are active so new upload is evaluated alongside them
-    if not normalizer_engine.raw_quotes:
-        normalizer_engine.ingest_all_vendors()
-
-    # Determine assigned vendor ID
-    assigned_v_id = vendor_id
-    if not assigned_v_id or assigned_v_id == "auto" or assigned_v_id == "new":
+    # When in default demo mode, clear old benchmark quotes so analysis runs exclusively on uploaded quotes!
+    should_replace = not normalizer_engine.is_custom_mode
+    if should_replace:
+        normalizer_engine.raw_quotes = {}
+        normalizer_engine.qualifications = {}
+        normalizer_engine.is_custom_mode = True
+        assigned_v_id = "VEND-001"
+    elif not assigned_v_id or assigned_v_id == "auto" or assigned_v_id == "new":
         assigned_v_id = generate_next_vendor_id(list(normalizer_engine.raw_quotes.keys()))
 
     target_path = os.path.join(DATASET_DIR, f"upload_{assigned_v_id}_{file.filename}")
@@ -206,9 +214,11 @@ async def upload_batch_files(files: List[UploadFile] = File(...)) -> Dict[str, A
     results = []
     category_mismatches = []
 
-    # Ensure baseline quotes are loaded so custom quotes are evaluated alongside or added to them
-    if not normalizer_engine.raw_quotes:
-        normalizer_engine.ingest_all_vendors()
+    # When in default demo mode, clear old benchmark quotes so analysis runs exclusively on uploaded batch!
+    if not normalizer_engine.is_custom_mode:
+        normalizer_engine.raw_quotes = {}
+        normalizer_engine.qualifications = {}
+        normalizer_engine.is_custom_mode = True
 
     for file in files:
         ext = os.path.splitext(file.filename)[1].lower()

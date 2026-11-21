@@ -549,9 +549,18 @@ export const Step4Award: React.FC<Step4AwardProps> = ({
   const awardedCount = awardedVendors.length > 0 ? awardedVendors.length : 3;
   const totalAllocatedSkus = awardedVendors.reduce((acc, [_, a]: any) => acc + (a.sku_count || 0), 0) || 30;
 
+  const activeVendorNames = useMemo(() => {
+    if (matrixData?.rows?.[0]?.quotes) {
+      return Object.values(matrixData.rows[0].quotes).map((q: any) => q.vendor_name).filter(Boolean);
+    }
+    return [];
+  }, [matrixData]);
+
   const awardedSummaryText = awardedVendors.length > 0
     ? awardedVendors.map(([name, a]: any) => `${a.sku_count} ${name.replace(/^Vendor\s+\d+\s*[-–]\s*/i, "").trim()}`).join(", ")
-    : "19 Apex Technology Solutions, 4 National IT Systems, 7 Shree Balaji Infotech";
+    : activeVendorNames.length > 0
+      ? activeVendorNames.join(", ")
+      : "19 Apex Technology Solutions, 4 National IT Systems, 7 Shree Balaji Infotech";
 
   // Build dynamic SKU list merging scenarioResult.line_allocations, matrixData, and defaults
   const detailedSkus: SkuAllocationDetail[] = useMemo(() => {
@@ -559,8 +568,8 @@ export const Step4Award: React.FC<Step4AwardProps> = ({
       return scenarioResult.line_allocations.map((alloc: any) => {
         const fallback = default30SkuAllocations.find(d => d.line === alloc.line_number) || default30SkuAllocations[0];
         const matrixRow = matrixData?.rows?.find((r: any) => r.line_number === alloc.line_number);
-
-        const vName = (alloc.awarded_vendor_name || fallback.vendorName)
+        const fallbackVName = activeVendorNames.length > 0 ? activeVendorNames[0] : fallback.vendorName;
+        const vName = (alloc.awarded_vendor_name || fallbackVName)
           .replace(/^Vendor\s+\d+\s*[-–]\s*/i, "")
           .trim();
 

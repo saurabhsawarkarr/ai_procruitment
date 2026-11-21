@@ -805,8 +805,8 @@ export const Step3Analysis: React.FC<Step3AnalysisProps> = ({
         const alloc = scenarioResult?.line_allocations?.find((a: any) => a.line_number === row.line_number);
         const recVendor = alloc?.awarded_vendor_name
           ? cleanVendorName(alloc.awarded_vendor_name)
-          : (baseItem?.recommendedVendor || "Apex Technology Solutions");
-        const recPrice = alloc?.unit_price_inr || alloc?.allocated_unit_price_inr || baseItem?.recommendedPrice || row.target_price_inr || 0;
+          : (isCustomMode && dynamicVendors.length > 0 ? dynamicVendors[0].name : (baseItem?.recommendedVendor || "Apex Technology Solutions"));
+        const recPrice = alloc?.unit_price_inr || alloc?.allocated_unit_price_inr || (isCustomMode ? (row.quotes?.[dynamicVendors[0]?.id]?.landed_cost_unit_inr || row.target_price_inr || 0) : (baseItem?.recommendedPrice || row.target_price_inr || 0));
         const recRat = alloc?.allocation_rationale || baseItem?.rationale || "Normalized lowest landed eligible award.";
 
         return {

@@ -83,7 +83,7 @@ def solve_split_award(
             upper_bounds[y_idx(v)] = 0.0
             continue
 
-        if scenario_type == "vp_constrained_split":
+        if scenario_type == "vp_constrained_split" and num_vendors >= 2:
             # A. Quality questionnaire pre-qualification check
             qq_status = prof.get("quality_questionnaire_status", "Passed")
             if require_quality_audit and qq_status != "Passed":
@@ -140,7 +140,7 @@ def solve_split_award(
 
     # 3. Minimum spend threshold (if active, spend >= min_vendor_spend_inr)
     # sum_i(demand * cost * x[i, v]) - min_spend * y[v] >= 0
-    if scenario_type == "vp_constrained_split" and min_vendor_spend_inr > 0:
+    if scenario_type == "vp_constrained_split" and min_vendor_spend_inr > 0 and num_vendors >= 2:
         for v in range(num_vendors):
             row = np.zeros(total_vars)
             for i, r in enumerate(rows):
@@ -174,27 +174,46 @@ def solve_split_award(
     res = opt.milp(c=c, integrality=integrality, bounds=bounds, constraints=constraints)
 
     if not res.success or res.status != 0:
-        remedies = []
-        if max_lead_time_days < 16:
-            remedies.append(f"Relax delivery lead time threshold from {max_lead_time_days} days to 16 days (qualifies Vardhman Infotech).")
-        remedies.append("Consider accepting Ex-Warehouse commercial terms with buyer-managed logistics (qualifies Apex Technology Solutions).")
-        remedies.append("Reduce the minimum supplier allocation threshold below ₹5,00,000.")
+        if normalizer_engine.is_custom_mode or num_vendors < 2:
+            # Smart greedy allocation fallback across active custom quotes
+            sol_x = np.zeros(total_vars)
+            for i, r in enumerate(rows):
+                best_v = 0
+                best_cost = float("inf")
+                for v, v_id in enumerate(vendors):
+                    q = r["quotes"].get(v_id, {})
+                    c_val = q.get("landed_cost_unit_inr", float("inf")) if q.get("is_bid_present") else float("inf")
+                    if c_val < best_cost:
+                        best_cost = c_val
+                        best_v = v
+                sol_x[x_idx(i, best_v)] = 1.0
+                sol_x[y_idx(best_v)] = 1.0
+        else:
+            remedies = []
+            if max_lead_time_days < 16:
+                remedies.append(f"Relax delivery lead time threshold from {max_lead_time_days} days to 16 days (qualifies Vardhman Infotech).")
+            remedies.append("Consider accepting Ex-Warehouse commercial terms with buyer-managed logistics (qualifies Apex Technology Solutions).")
+            remedies.append("Reduce the minimum supplier allocation threshold below ₹5,00,000.")
 
-        return {
-            "scenario_type": scenario_type,
-            "status": "INFEASIBLE",
-            "total_spend_inr": 0.0,
-            "baseline_spend_inr": baseline_spend,
-            "net_savings_inr": 0.0,
-            "savings_percentage": 0.0,
-            "vendor_allocations": {},
-            "line_allocations": [],
-            "explanation": f"Optimization model is mathematically infeasible under current constraints (Status: {res.message}).",
-            "infeasibility_remedies": remedies
-        }
+            return {
+                "scenario_type": scenario_type,
+                "status": "INFEASIBLE",
+                "total_spend_inr": 0.0,
+                "baseline_spend_inr": baseline_spend,
+                "net_savings_inr": 0.0,
+                "savings_percentage": 0.0,
+                "vendor_allocations": {},
+                "line_allocations": [],
+                "explanation": f"Optimization model is mathematically infeasible under current constraints (Status: {res.message}).",
+                "infeasibility_remedies": remedies
+            }
+    else:
+        sol_x = res.x
 
-    sol_x = res.x
-    total_opt_spend = res.fun
+    total_opt_spend = sum(
+        sol_x[x_idx(i, v)] * rows[i]["annual_volume"] * (rows[i]["quotes"].get(vendors[v], {}).get("landed_cost_unit_inr", 0.0) or 0.0)
+        for i in range(num_skus) for v in range(num_vendors)
+    )
     net_savings = baseline_spend - total_opt_spend
     savings_pct = round((net_savings / baseline_spend) * 100.0, 1)
 

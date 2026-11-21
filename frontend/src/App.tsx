@@ -455,46 +455,70 @@ export function App() {
   };
 
   const handleAddSupplier = (newSupplier: SupplierRow, newException: ExceptionData) => {
-    // Append the newly uploaded supplier to the active supplier list
-    setSuppliers(prev => {
-      const remaining = prev.filter(s => s.file !== newSupplier.file && s.name !== newSupplier.name);
-      return [...remaining, newSupplier];
-    });
+    if (!isCustomMode) {
+      // First custom upload: PURGE the 5 old demo quotes completely so analysis starts ONLY on the uploaded quote!
+      setIsCustomMode(true);
+      setSuppliers([newSupplier]);
+      const cleanException = { ...newException, exceptionNumber: 1 };
+      setExceptions([cleanException]);
+      setSelectedExceptionId(cleanException.id);
+    } else {
+      // Already in custom mode: append to previously uploaded custom quotes
+      setSuppliers(prev => {
+        const remaining = prev.filter(s => s.file !== newSupplier.file && s.name !== newSupplier.name);
+        return [...remaining, newSupplier];
+      });
 
-    setExceptions(prev => {
-      const remaining = prev.filter(e => e.sourceDocName !== newException.sourceDocName);
-      const combined = [...remaining, newException];
-      return combined.map((exc, idx) => ({
-        ...exc,
-        exceptionNumber: idx + 1
-      }));
-    });
+      setExceptions(prev => {
+        const remaining = prev.filter(e => e.sourceDocName !== newException.sourceDocName);
+        const combined = [...remaining, newException];
+        return combined.map((exc, idx) => ({
+          ...exc,
+          exceptionNumber: idx + 1
+        }));
+      });
+      setSelectedExceptionId(newException.id);
+    }
 
-    setSelectedExceptionId(newException.id);
     loadData();
   };
 
   const handleAddSuppliersBatch = (newSuppliers: SupplierRow[], newExceptions: ExceptionData[]) => {
-    // Append the newly uploaded batch of suppliers to the active supplier list
-    setSuppliers(prev => {
-      const newFiles = new Set(newSuppliers.map(s => s.file));
-      const remaining = prev.filter(s => !newFiles.has(s.file));
-      return [...remaining, ...newSuppliers];
-    });
-
-    setExceptions(prev => {
-      const newDocNames = new Set(newExceptions.map(e => e.sourceDocName));
-      const remaining = prev.filter(e => !newDocNames.has(e.sourceDocName));
-      const combined = [...remaining, ...newExceptions];
-      return combined.map((exc, idx) => ({
+    if (!isCustomMode) {
+      // First custom batch upload: PURGE the 5 old demo quotes completely so analysis starts ONLY on the uploaded batch!
+      setIsCustomMode(true);
+      setSuppliers(newSuppliers);
+      const renumbered = newExceptions.map((exc, idx) => ({
         ...exc,
         exceptionNumber: idx + 1
       }));
-    });
+      setExceptions(renumbered);
+      if (renumbered.length > 0) {
+        setSelectedExceptionId(renumbered[0].id);
+      }
+    } else {
+      // Already in custom mode: append to existing custom uploaded quotes
+      setSuppliers(prev => {
+        const newFiles = new Set(newSuppliers.map(s => s.file));
+        const remaining = prev.filter(s => !newFiles.has(s.file));
+        return [...remaining, ...newSuppliers];
+      });
 
-    if (newExceptions.length > 0) {
-      setSelectedExceptionId(newExceptions[0].id);
+      setExceptions(prev => {
+        const newDocNames = new Set(newExceptions.map(e => e.sourceDocName));
+        const remaining = prev.filter(e => !newDocNames.has(e.sourceDocName));
+        const combined = [...remaining, ...newExceptions];
+        return combined.map((exc, idx) => ({
+          ...exc,
+          exceptionNumber: idx + 1
+        }));
+      });
+
+      if (newExceptions.length > 0) {
+        setSelectedExceptionId(newExceptions[0].id);
+      }
     }
+
     loadData();
   };
 
@@ -515,10 +539,10 @@ export function App() {
       prev.map(s =>
         s.id === supplierId
           ? {
-              ...s,
-              status,
-              flagType: status === "Processed" ? "success" : "warning"
-            }
+            ...s,
+            status,
+            flagType: status === "Processed" ? "success" : "warning"
+          }
           : s
       )
     );

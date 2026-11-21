@@ -79,29 +79,30 @@ def export_award_excel(scenario: str = "vp_constrained_split") -> Response:
 
     # Sheet 2: Master Quote Matrix
     ws2 = wb.create_sheet(title="Quote Analysis Master Matrix")
-    matrix_headers = ["Line #", "SKU Code", "Description", "Annual Demand", "Baseline (INR)", "Target Price (INR)",
-                      "Apex Technology (VEND-001)", "CompuZone India (VEND-002)", "National IT (VEND-003)", "Vardhman Infotech (VEND-004)", "Shree Balaji (VEND-005)"]
+    active_v_ids = list(normalizer_engine.raw_quotes.keys())
+    matrix_headers = ["Line #", "SKU Code", "Description", "Annual Demand", "Baseline (INR)", "Target Price (INR)"]
+    for vid in active_v_ids:
+        v_name = normalizer_engine.raw_quotes[vid].get("vendor_name", vid)
+        matrix_headers.append(f"{v_name} ({vid})")
+
     for col_idx, h in enumerate(matrix_headers, 1):
         cell = ws2.cell(row=1, column=col_idx, value=h)
         cell.fill = hdr_fill
         cell.font = hdr_font
 
     for r_num, row in enumerate(rows, start=2):
-        v1_p = row["quotes"].get("VEND-001", {}).get("landed_cost_unit_inr", "—")
-        v2_p = row["quotes"].get("VEND-002", {}).get("landed_cost_unit_inr", "—")
-        v3_p = row["quotes"].get("VEND-003", {}).get("landed_cost_unit_inr", "—")
-        v4_p = row["quotes"].get("VEND-004", {}).get("landed_cost_unit_inr", "—")
-        v5_p = row["quotes"].get("VEND-005", {}).get("landed_cost_unit_inr", "—")
-
-        ws2.append([
+        row_vals = [
             row["line_number"],
             row["sku_code"],
             row["description"],
             row["annual_volume"],
             row["historical_baseline_inr"],
-            row["target_price_inr"],
-            v1_p, v2_p, v3_p, v4_p, v5_p
-        ])
+            row["target_price_inr"]
+        ]
+        for vid in active_v_ids:
+            cost = row["quotes"].get(vid, {}).get("landed_cost_unit_inr", "—")
+            row_vals.append(cost)
+        ws2.append(row_vals)
 
     # Sheet 3: Award Line Schedule
     ws3 = wb.create_sheet(title="Line-by-Line Award Schedule")
