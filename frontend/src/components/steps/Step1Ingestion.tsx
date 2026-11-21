@@ -1222,112 +1222,11 @@ export const Step1Ingestion: React.FC<Step1IngestionProps> = ({
       return;
     }
 
-    showToast(`Uploading and analyzing ${validFiles.length} quotation file(s)...`);
+    showToast(`Uploading and validating ${validFiles.length} quotation file(s)...`);
 
-    const newSupplierRows: SupplierRow[] = [];
-    const newExceptions: ExceptionData[] = [];
-
-    validFiles.forEach((file, idx) => {
-      const ext = file.name.split(".").pop()?.toLowerCase();
-      let ftype: "pdf" | "xlsx" | "docx" | "jpg" | "eml" | "csv" | "json" = "pdf";
-      if (ext === "xlsx" || ext === "xls" || ext === "csv" || ext === "tsv") ftype = "xlsx";
-      else if (ext === "docx" || ext === "doc") ftype = "docx";
-      else if (["jpg", "jpeg", "png"].includes(ext || "")) ftype = "jpg";
-      else if (ext === "eml" || ext === "txt") ftype = "eml";
-      else if (ext === "json") ftype = "json";
-
-      // Derive smart supplier name from file name
-      let cleanName = file.name.replace(/\.[^/.]+$/, "");
-      cleanName = cleanName.replace(/^\d+[\s_-]*/, ""); // remove leading "01_", "02_", etc.
-      cleanName = cleanName.replace(/[_-]/g, " ").trim();
-      const lower = cleanName.toLowerCase();
-
-      let supplierName = "";
-      // 10 Brand-New Diverse Format Suppliers
-      if (lower.includes("lti") || lower.includes("mindtree")) supplierName = "LTIMindtree Enterprise Infrastructure";
-      else if (lower.includes("cognizant")) supplierName = "Cognizant Cloud & Compute Solutions";
-      else if (lower.includes("hcl") || lower.includes("hcltech")) supplierName = "HCLTech Corporate Hardware Solutions";
-      else if (lower.includes("hitachi")) supplierName = "Hitachi Systems India Pvt Ltd";
-      else if (lower.includes("microland")) supplierName = "Microland Digital Networks & Compute";
-      else if (lower.includes("ingram")) supplierName = "Ingram Micro India Distribution";
-      else if (lower.includes("netweb")) supplierName = "Netweb Technologies Enterprise Computing";
-      else if (lower.includes("ananya")) supplierName = "Ananya Cloud & Hardware Systems";
-      else if (lower.includes("team")) supplierName = "Team Computers Digital Solutions";
-      else if (lower.includes("sonata")) supplierName = "Sonata Information Technology Ltd";
-      // Previous Demo Suppliers (Backward Compatibility)
-      else if (lower.includes("tata") || lower.includes("elxsi")) supplierName = "Tata Elxsi Systems";
-      else if (lower.includes("dell") || lower.includes("infradirect")) supplierName = "Dell Premier (InfraDirect)";
-      else if (lower.includes("lenovo")) supplierName = "Lenovo Global Enterprise";
-      else if (lower.includes("wipro")) supplierName = "Wipro Infotech Ltd";
-      else if (lower.includes("hp")) supplierName = "HP Enterprise Direct";
-      else if (lower.includes("redington")) supplierName = "Redington Cloud & Infra";
-      else if (lower.includes("dynacons")) supplierName = "Dynacons Systems & Solutions";
-      else if (lower.includes("apple") || lower.includes("unicorn")) supplierName = "Unicorn (Apple Enterprise)";
-      else if (lower.includes("cisco")) supplierName = "Cisco NetOps Enterprise";
-      else if (lower.includes("inspira")) supplierName = "Inspira Datacenter Solutions";
-      else {
-        // Strip out words like "quote", "vendor", "bid"
-        const filteredWords = cleanName
-          .split(/\s+/)
-          .filter(w => !["quote", "quotation", "vendor", "upload", "bid"].includes(w.toLowerCase()));
-        supplierName = filteredWords
-          .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-          .join(" ");
-        if (!supplierName || supplierName.length < 3) {
-          supplierName = `Custom Supplier ${suppliers.length + idx + 1}`;
-        }
-      }
-
-      // Intelligent status detection:
-      const isScan =
-        ["jpg", "jpeg", "png"].includes(ext || "") ||
-        lower.includes("scan") ||
-        lower.includes("photo") ||
-        lower.includes("ratesheet");
-      const isPartial = lower.includes("vardhman");
-      const status: "Processed" | "Needs review" = (isScan || isPartial) ? "Needs review" : "Processed";
-      const flagType: "success" | "warning" = status === "Processed" ? "success" : "warning";
-      const itemsExtracted = isPartial ? "27/30" : "30/30";
-
-      const uniqueVendorId = `VEND-${supplierName.replace(/[^a-zA-Z0-9]/g, "").toUpperCase()}-${Date.now().toString(36)}-${idx}`;
-
-      const newSupplierRow: SupplierRow = {
-        id: uniqueVendorId,
-        name: supplierName,
-        file: file.name,
-        fileType: ftype,
-        itemsExtracted,
-        status,
-        incoterms: ext === "xlsx" ? "Ex-Works Bhiwandi" : "DDP Tech Centers",
-        paymentTerms: "Net 30 Days",
-        notes:
-          status === "Processed"
-            ? `Extracted 30 SKUs with 100% confidence. Structured digital quotation verified.`
-            : `Physical image scan. Visual inspection recommended for handwriting annotations.`,
-        flagType
-      };
-
-      // Generate dynamic exception for Step 2
-      const newException = createExceptionForUploadedFile(
-        file,
-        supplierName,
-        suppliers.length + idx + 1
-      );
-
-      newSupplierRows.push(newSupplierRow);
-      newExceptions.push(newException);
-    });
-
-    // 1. Immediately render in UI (0ms instant optimistic update)
-    if (onAddSuppliersBatch) {
-      onAddSuppliersBatch(newSupplierRows, newExceptions);
-    } else {
-      newSupplierRows.forEach((row, i) => onAddSupplier(row, newExceptions[i]));
-    }
-
-    // 2. Call backend batch upload in background
     try {
       const resp = await uploadBatchFiles(validFiles);
+
       if (resp && resp.category_mismatches && resp.category_mismatches.length > 0) {
         const m = resp.category_mismatches[0];
         setGuardrailAlert({
@@ -1335,9 +1234,119 @@ export const Step1Ingestion: React.FC<Step1IngestionProps> = ({
           detectedCategory: m.detected_category,
           reason: m.reason
         });
-      } else {
-        showToast(`Parsed ${validFiles.length} quotation file(s)! Comparison matrix updated.`);
       }
+
+      // Filter out any files that failed or were flagged by category guardrails
+      const mismatchFileNames = new Set((resp?.category_mismatches || []).map((m: any) => m.file_name));
+      const successfulFiles = validFiles.filter(f => !mismatchFileNames.has(f.name));
+
+      if (successfulFiles.length === 0) {
+        // Zero valid quotation files survived guardrail screening
+        return;
+      }
+
+      const newSupplierRows: SupplierRow[] = [];
+      const newExceptions: ExceptionData[] = [];
+
+      successfulFiles.forEach((file, idx) => {
+        const ext = file.name.split(".").pop()?.toLowerCase();
+        let ftype: "pdf" | "xlsx" | "docx" | "jpg" | "eml" | "csv" | "json" = "pdf";
+        if (ext === "xlsx" || ext === "xls" || ext === "csv" || ext === "tsv") ftype = "xlsx";
+        else if (ext === "docx" || ext === "doc") ftype = "docx";
+        else if (["jpg", "jpeg", "png"].includes(ext || "")) ftype = "jpg";
+        else if (ext === "eml" || ext === "txt") ftype = "eml";
+        else if (ext === "json") ftype = "json";
+
+        // Derive smart supplier name from file name
+        let cleanName = file.name.replace(/\.[^/.]+$/, "");
+        cleanName = cleanName.replace(/^\d+[\s_-]*/, ""); // remove leading "01_", "02_", etc.
+        cleanName = cleanName.replace(/[_-]/g, " ").trim();
+        const lower = cleanName.toLowerCase();
+
+        let supplierName = "";
+        // 10 Brand-New Diverse Format Suppliers
+        if (lower.includes("lti") || lower.includes("mindtree")) supplierName = "LTIMindtree Enterprise Infrastructure";
+        else if (lower.includes("cognizant")) supplierName = "Cognizant Cloud & Compute Solutions";
+        else if (lower.includes("hcl") || lower.includes("hcltech")) supplierName = "HCLTech Corporate Hardware Solutions";
+        else if (lower.includes("hitachi")) supplierName = "Hitachi Systems India Pvt Ltd";
+        else if (lower.includes("microland")) supplierName = "Microland Digital Networks & Compute";
+        else if (lower.includes("ingram")) supplierName = "Ingram Micro India Distribution";
+        else if (lower.includes("netweb")) supplierName = "Netweb Technologies Enterprise Computing";
+        else if (lower.includes("ananya")) supplierName = "Ananya Cloud & Hardware Systems";
+        else if (lower.includes("team")) supplierName = "Team Computers Digital Solutions";
+        else if (lower.includes("sonata")) supplierName = "Sonata Information Technology Ltd";
+        // Previous Demo Suppliers (Backward Compatibility)
+        else if (lower.includes("tata") || lower.includes("elxsi")) supplierName = "Tata Elxsi Systems";
+        else if (lower.includes("dell") || lower.includes("infradirect")) supplierName = "Dell Premier (InfraDirect)";
+        else if (lower.includes("lenovo")) supplierName = "Lenovo Global Enterprise";
+        else if (lower.includes("wipro")) supplierName = "Wipro Infotech Ltd";
+        else if (lower.includes("hp")) supplierName = "HP Enterprise Direct";
+        else if (lower.includes("redington")) supplierName = "Redington Cloud & Infra";
+        else if (lower.includes("dynacons")) supplierName = "Dynacons Systems & Solutions";
+        else if (lower.includes("apple") || lower.includes("unicorn")) supplierName = "Unicorn (Apple Enterprise)";
+        else if (lower.includes("cisco")) supplierName = "Cisco NetOps Enterprise";
+        else if (lower.includes("inspira")) supplierName = "Inspira Datacenter Solutions";
+        else {
+          // Strip out words like "quote", "vendor", "bid"
+          const filteredWords = cleanName
+            .split(/\s+/)
+            .filter(w => !["quote", "quotation", "vendor", "upload", "bid"].includes(w.toLowerCase()));
+          supplierName = filteredWords
+            .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+            .join(" ");
+          if (!supplierName || supplierName.length < 3) {
+            supplierName = `Custom Supplier ${suppliers.length + idx + 1}`;
+          }
+        }
+
+        // Intelligent status detection:
+        const isScan =
+          ["jpg", "jpeg", "png"].includes(ext || "") ||
+          lower.includes("scan") ||
+          lower.includes("photo") ||
+          lower.includes("ratesheet");
+        const isPartial = lower.includes("vardhman");
+        const status: "Processed" | "Needs review" = (isScan || isPartial) ? "Needs review" : "Processed";
+        const flagType: "success" | "warning" = status === "Processed" ? "success" : "warning";
+        const itemsExtracted = isPartial ? "27/30" : "30/30";
+
+        const uniqueVendorId = `VEND-${supplierName.replace(/[^a-zA-Z0-9]/g, "").toUpperCase()}-${Date.now().toString(36)}-${idx}`;
+
+        const newSupplierRow: SupplierRow = {
+          id: uniqueVendorId,
+          name: supplierName,
+          file: file.name,
+          fileType: ftype,
+          itemsExtracted,
+          status,
+          incoterms: ext === "xlsx" ? "Ex-Works Bhiwandi" : "DDP Tech Centers",
+          paymentTerms: "Net 30 Days",
+          notes:
+            status === "Processed"
+              ? `Extracted 30 SKUs with 100% confidence. Structured digital quotation verified.`
+              : `Physical image scan. Visual inspection recommended for handwriting annotations.`,
+          flagType
+        };
+
+        // Generate dynamic exception for Step 2
+        const newException = createExceptionForUploadedFile(
+          file,
+          supplierName,
+          suppliers.length + idx + 1
+        );
+
+        newSupplierRows.push(newSupplierRow);
+        newExceptions.push(newException);
+      });
+
+      // Render genuinely valid quotations in UI
+      if (onAddSuppliersBatch) {
+        onAddSuppliersBatch(newSupplierRows, newExceptions);
+      } else {
+        newSupplierRows.forEach((row, i) => onAddSupplier(row, newExceptions[i]));
+      }
+
+      showToast(`Ingested ${successfulFiles.length} quotation file(s)! Master matrix updated.`);
     } catch (err) {
       console.warn("Upload API call warning:", err);
     }

@@ -401,6 +401,22 @@ def parse_arbitrary_quotation_file(file_path: str, assigned_vendor_id: str = "VE
         if ln not in unique_items_map:
             unique_items_map[ln] = item
 
+    # If NO commercial line items or pricing tables were detected in the document,
+    # REJECT IT immediately as a non-quotation document rather than synthesizing fake prices!
+    if not unique_items_map:
+        return {
+            "status": "CATEGORY_MISMATCH",
+            "is_category_mismatch": True,
+            "detected_category": "Non-Quotation Document (No Pricing Found)",
+            "active_category": "Enterprise IT Hardware & Client Compute",
+            "confidence": 0.95,
+            "reason": "Document does not contain any valid commercial quotation tables, SKU codes, or line item prices. Quarantined to protect the RFx matrix.",
+            "vendor_id": assigned_vendor_id,
+            "vendor_name": supplier_name,
+            "items": [],
+            "message": "Document contains no valid commercial quotation tables or line item prices."
+        }
+
     final_items = []
     # Deterministic supplier variance factor based on vendor name
     name_hash = sum(ord(c) for c in supplier_name)

@@ -188,6 +188,23 @@ async def upload_vendor_file(vendor_id: Optional[str] = None, file: UploadFile =
         parsed_quote = parse_arbitrary_packaging_file(target_path, assigned_v_id)
         extraction_notes = f"Executed Universal Adaptive Parser for {parsed_quote.get('vendor_name')}: {parsed_quote.get('lines_quoted_count', 0)}/30 lines quoted."
 
+    # Check if universal parser detected category mismatch or non-quotation document
+    if parsed_quote.get("is_category_mismatch") or parsed_quote.get("status") == "CATEGORY_MISMATCH":
+        return {
+            "status": "CATEGORY_MISMATCH",
+            "is_category_mismatch": True,
+            "file_name": file.filename,
+            "detected_category": parsed_quote.get("detected_category", "Non-Quotation Document"),
+            "active_category": "Enterprise IT Hardware & Client Compute",
+            "confidence_score": parsed_quote.get("confidence", 0.95),
+            "explanation": parsed_quote.get("reason", "Document does not contain valid quotation pricing."),
+            "suggested_actions": [
+                "Quarantine file to protect IT hardware matrix",
+                "Dismiss uploaded file"
+            ],
+            "message": f"This document appears to be '{parsed_quote.get('detected_category')}', but the active RFx is for 'Enterprise IT Hardware & Client Compute'."
+        }
+
     # 3. DYNAMIC MATRIX INJECTION
     parsed_quote["vendor_id"] = assigned_v_id
     normalizer_engine.add_custom_vendor(assigned_v_id, parsed_quote)
@@ -277,6 +294,16 @@ async def upload_batch_files(files: List[UploadFile] = File(...)) -> Dict[str, A
         else:
             # Universal Adaptive Parser for any custom quotation file
             parsed = parse_arbitrary_packaging_file(target_path, v_id)
+
+        # Check if universal parser flagged mismatch or non-quotation
+        if parsed.get("is_category_mismatch") or parsed.get("status") == "CATEGORY_MISMATCH":
+            category_mismatches.append({
+                "file_name": file.filename,
+                "detected_category": parsed.get("detected_category", "Non-Quotation Document"),
+                "confidence": parsed.get("confidence", 0.95),
+                "reason": parsed.get("reason", "Document does not contain valid quotation pricing.")
+            })
+            continue
 
         parsed["vendor_id"] = v_id
         normalizer_engine.add_custom_vendor(v_id, parsed, replace_all=False)

@@ -11,8 +11,7 @@ IT_HARDWARE_KEYWORDS = [
     "switch", "router", "ethernet", "hdmi", "usb-c", "thunderbolt", 
     "windows 11", "software license", "saas", "cpu", "processor", 
     "thinkpad", "latitude", "elitebook", "poweredge", "proliant", "catalyst",
-    "workstation", "ultrasharp", "dock", "docking", "nas", "rackmount", "ups",
-    "pricing", "quote", "quotation", "rate", "commercial", "ddp", "ex-works", "sku"
+    "workstation", "ultrasharp", "dock", "docking", "nas", "rackmount", "ups"
 ]
 
 # 1. Personal Identity Documents & PII (Aadhaar, PAN, Passport, Voter ID)
@@ -29,9 +28,18 @@ IDENTITY_PII_KEYWORDS = [
 RESUME_KEYWORDS = [
     "resume", "curriculum vitae", "work experience", "professional summary", 
     "educational qualification", "skills summary", "employment history", 
-    "b.tech", "m.tech", "bachelor of", "master of", "academic background", 
+    "b.tech", "m.tech", "b.e.", "bachelor of", "master of", "academic background", 
     "extracurricular", "certifications", "linkedin.com", "career objective", 
-    "declaration", "technical skills", "internship", "hobbies", "education"
+    "declaration", "technical skills", "internship", "hobbies", "education",
+    "responsibilities", "accomplishments", "projects", "cgpa", "gpa", "university"
+]
+
+# Commercial Quotation Signals
+COMMERCIAL_QUOTE_SIGNALS = [
+    "quotation", "rfp", "rfx", "tender", "gstin", "hsn code", "commercial proposal",
+    "quote no", "quote reference", "bid submission", "unit rate", "unit price",
+    "bill to", "ship to", "payment terms", "incoterms", "ddp", "ex-works", "fob",
+    "validity of quote", "authorized signatory", "landed cost", "sku-"
 ]
 
 # 3. Legal Agreements without pricing
@@ -91,20 +99,23 @@ def detect_category_from_text(text: str) -> Tuple[bool, str, float, str]:
         )
 
     # --- 2. RESUME / CURRICULUM VITAE CHECK ---
-    resume_score = sum(1 for kw in RESUME_KEYWORDS if re.search(r"\b" + re.escape(kw) + r"\b", clean_text))
-    it_hardware_score = sum(1 for kw in IT_HARDWARE_KEYWORDS if re.search(r"\b" + re.escape(kw) + r"\b", clean_text))
+    # Count resume indicators vs commercial quotation indicators
+    resume_matches = [kw for kw in RESUME_KEYWORDS if re.search(r"\b" + re.escape(kw) + r"\b", clean_text)]
+    quote_matches = [kw for kw in COMMERCIAL_QUOTE_SIGNALS if re.search(r"\b" + re.escape(kw) + r"\b", clean_text)]
 
-    if resume_score >= 2 and it_hardware_score <= 2:
+    # If it exhibits multiple resume signals and lacks commercial quote structures, it is a resume!
+    # Even if a software engineer's resume mentions servers, Python, or GPUs, it's a person's resume.
+    if len(resume_matches) >= 2 and len(quote_matches) <= 1:
         return (
             True,
             "Candidate Resume / Curriculum Vitae (CV)",
             0.99,
-            f"Document identified as an individual candidate resume or employment CV ({resume_score} HR/qualification sections detected). It contains candidate background details rather than commercial supplier quotation rate sheets."
+            f"Document identified as an individual candidate resume or employment CV ({len(resume_matches)} HR/qualification sections detected: {', '.join(resume_matches[:4])}). It contains candidate background details rather than commercial supplier quotation rate sheets."
         )
 
     # --- 3. LEGAL NDA / CONTRACT CHECK ---
     legal_score = sum(1 for kw in LEGAL_KEYWORDS if re.search(r"\b" + re.escape(kw) + r"\b", clean_text))
-    if legal_score >= 2 and it_hardware_score <= 2:
+    if legal_score >= 2 and len(quote_matches) <= 1:
         return (
             True,
             "Legal Non-Disclosure Agreement (NDA)",
@@ -113,6 +124,7 @@ def detect_category_from_text(text: str) -> Tuple[bool, str, float, str]:
         )
 
     # --- 4. COMMODITY CATEGORY MISMATCH CHECKS ---
+    it_hardware_score = sum(1 for kw in IT_HARDWARE_KEYWORDS if re.search(r"\b" + re.escape(kw) + r"\b", clean_text))
     pkg_score = sum(1 for kw in PACKAGING_KEYWORDS if re.search(r"\b" + re.escape(kw) + r"\b", clean_text))
     furn_score = sum(1 for kw in FURNITURE_KEYWORDS if re.search(r"\b" + re.escape(kw) + r"\b", clean_text))
     chem_score = sum(1 for kw in CHEMICAL_KEYWORDS if re.search(r"\b" + re.escape(kw) + r"\b", clean_text))
@@ -145,11 +157,7 @@ def detect_category_from_text(text: str) -> Tuple[bool, str, float, str]:
         )
 
     # --- 5. ZERO QUOTATION / UNRELATED DOCUMENT CHECK ---
-    # Check if there is literally no quote-like content at all
-    quote_tokens = ["quote", "quotation", "rate", "price", "pricing", "inr", "rs.", "cost", "unit price", "ddp", "ex-works", "terms"]
-    quote_score = sum(1 for qt in quote_tokens if re.search(r"\b" + re.escape(qt) + r"\b", clean_text))
-
-    if it_hardware_score == 0 and quote_score == 0 and len(clean_text.strip()) > 50:
+    if it_hardware_score == 0 and len(quote_matches) == 0 and len(clean_text.strip()) > 50:
         return (
             True,
             "Unrelated Non-Quotation Document",
