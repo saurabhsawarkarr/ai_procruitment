@@ -1053,7 +1053,7 @@ def chat_with_aera(req: ChatRequest) -> ChatResponse:
 
     # 3. Grounding Verification: Audit response against live Master Matrix & qualifications
     audit_report = ai_guardrail_engine.verify_response_grounding(req.message, res.text, matrix_rows, vendors)
-    res.grounding = audit_report.dict()
+    res.grounding = audit_report.model_dump() if hasattr(audit_report, "model_dump") else audit_report.dict()
 
     return res
 

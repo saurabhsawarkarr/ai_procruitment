@@ -1648,15 +1648,15 @@ export const Step4Award: React.FC<Step4AwardProps> = ({
                           const badgeStyle = isApex
                             ? { bg: "#EFF6FF", color: "#1D4ED8", border: "#BFDBFE" }
                             : isNational
-                            ? { bg: "#F5F3FF", color: "#5B21B6", border: "#DDD6FE" }
-                            : { bg: "#F0FDF4", color: "#166534", border: "#BBF7D0" };
+                              ? { bg: "#F5F3FF", color: "#5B21B6", border: "#DDD6FE" }
+                              : { bg: "#F0FDF4", color: "#166534", border: "#BBF7D0" };
 
                           const catBadgeStyle =
                             item.category === "COMPUTE"
                               ? { bg: "#EFF6FF", color: "#2563EB" }
                               : item.category === "PERIPHERAL"
-                              ? { bg: "#FDF4FF", color: "#9333EA" }
-                              : { bg: "#FFF7ED", color: "#EA580C" };
+                                ? { bg: "#FDF4FF", color: "#9333EA" }
+                                : { bg: "#FFF7ED", color: "#EA580C" };
 
                           return (
                             <tr key={item.skuCode} style={{ borderBottom: "1px solid #F1F5F9" }}>

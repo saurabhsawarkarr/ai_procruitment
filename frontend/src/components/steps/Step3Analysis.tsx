@@ -100,8 +100,8 @@ export const Step3Analysis: React.FC<Step3AnalysisProps> = ({
     activeScenario === "single_source_best"
       ? "Recommended Strategy: Sole Supplier Consolidation (1 qualified supplier)"
       : activeScenario === "unconstrained_lowest"
-      ? `Recommended Strategy: Unconstrained Line-by-Line (${dynamicAwardedCount} suppliers)`
-      : `Recommended Strategy: Split award across ${dynamicAwardedCount} qualified suppliers`;
+        ? `Recommended Strategy: Unconstrained Line-by-Line (${dynamicAwardedCount} suppliers)`
+        : `Recommended Strategy: Split award across ${dynamicAwardedCount} qualified suppliers`;
   // Navigation Sub-tabs: "matrix" | "compliance"
   const [activeSubTab, setActiveSubTab] = useState<"matrix" | "compliance">("matrix");
 
@@ -1309,121 +1309,121 @@ export const Step3Analysis: React.FC<Step3AnalysisProps> = ({
           </div>
 
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
-          {/* Left: Filter Pills */}
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <span style={{ fontSize: "12px", color: "#64748B", fontWeight: 600 }}>Category:</span>
+            {/* Left: Filter Pills */}
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <span style={{ fontSize: "12px", color: "#64748B", fontWeight: 600 }}>Category:</span>
 
-            <button
-              onClick={() => { setSelectedCategory("ALL"); setCurrentPage(1); }}
+              <button
+                onClick={() => { setSelectedCategory("ALL"); setCurrentPage(1); }}
+                style={{
+                  padding: "5px 12px",
+                  borderRadius: "8px",
+                  fontSize: "12px",
+                  fontWeight: selectedCategory === "ALL" ? 700 : 500,
+                  backgroundColor: selectedCategory === "ALL" ? "#F1F5F9" : "#FFFFFF",
+                  color: selectedCategory === "ALL" ? "#0F172A" : "#64748B",
+                  border: "1px solid #CBD5E1",
+                  cursor: "pointer"
+                }}
+              >
+                All Items ({allSkus.length}) ▾
+              </button>
+
+              <button
+                onClick={() => { setSelectedCategory("COMPUTE"); setCurrentPage(1); }}
+                style={{
+                  padding: "5px 12px",
+                  borderRadius: "8px",
+                  fontSize: "12px",
+                  fontWeight: selectedCategory === "COMPUTE" ? 700 : 500,
+                  backgroundColor: selectedCategory === "COMPUTE" ? "#EFF6FF" : "#FFFFFF",
+                  color: selectedCategory === "COMPUTE" ? "#1D4ED8" : "#64748B",
+                  border: selectedCategory === "COMPUTE" ? "1px solid #BFDBFE" : "1px solid #E2E8F0",
+                  cursor: "pointer"
+                }}
+              >
+                Laptops & Compute ({allSkus.filter(s => s.category === "COMPUTE").length})
+              </button>
+
+              <button
+                onClick={() => { setSelectedCategory("PERIPHERAL"); setCurrentPage(1); }}
+                style={{
+                  padding: "5px 12px",
+                  borderRadius: "8px",
+                  fontSize: "12px",
+                  fontWeight: selectedCategory === "PERIPHERAL" ? 700 : 500,
+                  backgroundColor: selectedCategory === "PERIPHERAL" ? "#EFF6FF" : "#FFFFFF",
+                  color: selectedCategory === "PERIPHERAL" ? "#1D4ED8" : "#64748B",
+                  border: selectedCategory === "PERIPHERAL" ? "1px solid #BFDBFE" : "1px solid #E2E8F0",
+                  cursor: "pointer"
+                }}
+              >
+                Displays & Docks ({allSkus.filter(s => s.category === "PERIPHERAL").length})
+              </button>
+
+              <button
+                onClick={() => { setSelectedCategory("INFRA"); setCurrentPage(1); }}
+                style={{
+                  padding: "5px 12px",
+                  borderRadius: "8px",
+                  fontSize: "12px",
+                  fontWeight: selectedCategory === "INFRA" ? 700 : 500,
+                  backgroundColor: selectedCategory === "INFRA" ? "#EFF6FF" : "#FFFFFF",
+                  color: selectedCategory === "INFRA" ? "#1D4ED8" : "#64748B",
+                  border: selectedCategory === "INFRA" ? "1px solid #BFDBFE" : "1px solid #E2E8F0",
+                  cursor: "pointer"
+                }}
+              >
+                Enterprise Servers ({allSkus.filter(s => s.category === "INFRA").length})
+              </button>
+            </div>
+
+            {/* Right: Adjusted Landed vs Raw Quoted Price Toggle */}
+            <div
               style={{
-                padding: "5px 12px",
+                display: "flex",
+                alignItems: "center",
+                backgroundColor: "#F1F5F9",
                 borderRadius: "8px",
-                fontSize: "12px",
-                fontWeight: selectedCategory === "ALL" ? 700 : 500,
-                backgroundColor: selectedCategory === "ALL" ? "#F1F5F9" : "#FFFFFF",
-                color: selectedCategory === "ALL" ? "#0F172A" : "#64748B",
-                border: "1px solid #CBD5E1",
-                cursor: "pointer"
+                padding: "3px",
+                border: "1px solid #E2E8F0"
               }}
             >
-              All Items ({allSkus.length}) ▾
-            </button>
-
-            <button
-              onClick={() => { setSelectedCategory("COMPUTE"); setCurrentPage(1); }}
-              style={{
-                padding: "5px 12px",
-                borderRadius: "8px",
-                fontSize: "12px",
-                fontWeight: selectedCategory === "COMPUTE" ? 700 : 500,
-                backgroundColor: selectedCategory === "COMPUTE" ? "#EFF6FF" : "#FFFFFF",
-                color: selectedCategory === "COMPUTE" ? "#1D4ED8" : "#64748B",
-                border: selectedCategory === "COMPUTE" ? "1px solid #BFDBFE" : "1px solid #E2E8F0",
-                cursor: "pointer"
-              }}
-            >
-              Laptops & Compute ({allSkus.filter(s => s.category === "COMPUTE").length})
-            </button>
-
-            <button
-              onClick={() => { setSelectedCategory("PERIPHERAL"); setCurrentPage(1); }}
-              style={{
-                padding: "5px 12px",
-                borderRadius: "8px",
-                fontSize: "12px",
-                fontWeight: selectedCategory === "PERIPHERAL" ? 700 : 500,
-                backgroundColor: selectedCategory === "PERIPHERAL" ? "#EFF6FF" : "#FFFFFF",
-                color: selectedCategory === "PERIPHERAL" ? "#1D4ED8" : "#64748B",
-                border: selectedCategory === "PERIPHERAL" ? "1px solid #BFDBFE" : "1px solid #E2E8F0",
-                cursor: "pointer"
-              }}
-            >
-              Displays & Docks ({allSkus.filter(s => s.category === "PERIPHERAL").length})
-            </button>
-
-            <button
-              onClick={() => { setSelectedCategory("INFRA"); setCurrentPage(1); }}
-              style={{
-                padding: "5px 12px",
-                borderRadius: "8px",
-                fontSize: "12px",
-                fontWeight: selectedCategory === "INFRA" ? 700 : 500,
-                backgroundColor: selectedCategory === "INFRA" ? "#EFF6FF" : "#FFFFFF",
-                color: selectedCategory === "INFRA" ? "#1D4ED8" : "#64748B",
-                border: selectedCategory === "INFRA" ? "1px solid #BFDBFE" : "1px solid #E2E8F0",
-                cursor: "pointer"
-              }}
-            >
-              Enterprise Servers ({allSkus.filter(s => s.category === "INFRA").length})
-            </button>
-          </div>
-
-          {/* Right: Adjusted Landed vs Raw Quoted Price Toggle */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              backgroundColor: "#F1F5F9",
-              borderRadius: "8px",
-              padding: "3px",
-              border: "1px solid #E2E8F0"
-            }}
-          >
-            <button
-              onClick={() => setPriceMode("landed")}
-              style={{
-                padding: "4px 12px",
-                borderRadius: "6px",
-                fontSize: "12px",
-                fontWeight: priceMode === "landed" ? 700 : 500,
-                backgroundColor: priceMode === "landed" ? "#2563EB" : "transparent",
-                color: priceMode === "landed" ? "#FFFFFF" : "#64748B",
-                border: "none",
-                cursor: "pointer",
-                transition: "all 0.15s ease"
-              }}
-            >
-              Adjusted Landed Price (TCO)
-            </button>
-            <button
-              onClick={() => setPriceMode("raw")}
-              style={{
-                padding: "4px 12px",
-                borderRadius: "6px",
-                fontSize: "12px",
-                fontWeight: priceMode === "raw" ? 700 : 500,
-                backgroundColor: priceMode === "raw" ? "#2563EB" : "transparent",
-                color: priceMode === "raw" ? "#FFFFFF" : "#64748B",
-                border: "none",
-                cursor: "pointer",
-                transition: "all 0.15s ease"
-              }}
-            >
-              Raw Quoted Price
-            </button>
+              <button
+                onClick={() => setPriceMode("landed")}
+                style={{
+                  padding: "4px 12px",
+                  borderRadius: "6px",
+                  fontSize: "12px",
+                  fontWeight: priceMode === "landed" ? 700 : 500,
+                  backgroundColor: priceMode === "landed" ? "#2563EB" : "transparent",
+                  color: priceMode === "landed" ? "#FFFFFF" : "#64748B",
+                  border: "none",
+                  cursor: "pointer",
+                  transition: "all 0.15s ease"
+                }}
+              >
+                Adjusted Landed Price (TCO)
+              </button>
+              <button
+                onClick={() => setPriceMode("raw")}
+                style={{
+                  padding: "4px 12px",
+                  borderRadius: "6px",
+                  fontSize: "12px",
+                  fontWeight: priceMode === "raw" ? 700 : 500,
+                  backgroundColor: priceMode === "raw" ? "#2563EB" : "transparent",
+                  color: priceMode === "raw" ? "#FFFFFF" : "#64748B",
+                  border: "none",
+                  cursor: "pointer",
+                  transition: "all 0.15s ease"
+                }}
+              >
+                Raw Quoted Price
+              </button>
+            </div>
           </div>
         </div>
-      </div>
       )}
 
       {/* 5. Master Quote Comparison Table (Exactly 5 Suppliers - Issue 2) */}

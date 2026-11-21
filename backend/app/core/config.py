@@ -2,7 +2,14 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PROJECT_ROOT = os.path.dirname(BASE_DIR)
-DATASET_DIR = os.path.join(PROJECT_ROOT, "dataset")
+
+# Resolve dataset directory across local monorepo and container deployments
+if os.path.exists(os.path.join(PROJECT_ROOT, "dataset")):
+    DATASET_DIR = os.path.join(PROJECT_ROOT, "dataset")
+elif os.path.exists(os.path.join(BASE_DIR, "dataset")):
+    DATASET_DIR = os.path.join(BASE_DIR, "dataset")
+else:
+    DATASET_DIR = os.path.join(PROJECT_ROOT, "dataset")
 
 RFX_SPEC_PATH = os.path.join(DATASET_DIR, "rfx_spec_30_skus.json")
 VENDOR_QUALIFICATIONS_PATH = os.path.join(DATASET_DIR, "vendor_qualifications.json")

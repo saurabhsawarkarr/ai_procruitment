@@ -1,6 +1,19 @@
-const API_BASE = typeof window !== "undefined" && window.location.hostname === "localhost" 
-  ? "http://localhost:8000" 
-  : "http://127.0.0.1:8000";
+const getApiBase = () => {
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+  if (typeof window !== "undefined") {
+    // If running in Vite local dev server (port 5173/5174/3000), talk to local FastAPI port 8000
+    if (window.location.port === "5173" || window.location.port === "5174" || window.location.port === "3000") {
+      return `http://${window.location.hostname}:8000`;
+    }
+    // In production or when served directly from FastAPI / public tunnel, use same origin
+    return "";
+  }
+  return "http://localhost:8000";
+};
+
+const API_BASE = getApiBase();
 
 export async function fetchQuoteMatrix() {
   try {
