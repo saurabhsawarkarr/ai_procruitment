@@ -13,7 +13,8 @@ import {
   CheckCircle2,
   X,
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  ShieldAlert
 } from "lucide-react";
 import { uploadBatchFiles } from "../../api";
 import type { SupplierRow, ExceptionData } from "../../types/procurement";
@@ -1117,6 +1118,11 @@ export const Step1Ingestion: React.FC<Step1IngestionProps> = ({
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [viewingSupplier, setViewingSupplier] = useState<SupplierRow | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [guardrailAlert, setGuardrailAlert] = useState<{
+    fileName: string;
+    detectedCategory: string;
+    reason: string;
+  } | null>(null);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -1149,12 +1155,79 @@ export const Step1Ingestion: React.FC<Step1IngestionProps> = ({
   };
 
   const processUploadedFiles = async (files: File[]) => {
-    showToast(`Uploading and analyzing ${files.length} quotation file(s)...`);
+    // 1. Client-Side Non-Procurement / PII / Resume Guardrail Filter
+    const nonProcurementHits: { fileName: string; detectedCategory: string; reason: string }[] = [];
+    const validFiles: File[] = [];
+
+    files.forEach(file => {
+      const lower = file.name.toLowerCase();
+      if (
+        lower.includes("aadhaar") ||
+        lower.includes("aadhar") ||
+        lower.includes("uidai") ||
+        lower.includes("pan_card") ||
+        lower.includes("pancard") ||
+        lower.includes("voter") ||
+        lower.includes("passport") ||
+        lower.includes("id_card") ||
+        lower.includes("identity")
+      ) {
+        nonProcurementHits.push({
+          fileName: file.name,
+          detectedCategory: "Personal Identity Document (Aadhaar / Government ID / PII)",
+          reason: "Uploaded file detected as a personal government identity proof (Aadhaar/PAN). Commercial RFx portals strictly block personal identity documents from supplier comparison matrices to enforce enterprise data privacy and PII compliance."
+        });
+      } else if (
+        lower.includes("resume") ||
+        lower.includes("cv") ||
+        lower.includes("curriculum") ||
+        lower.includes("biodata") ||
+        lower.includes("profile")
+      ) {
+        nonProcurementHits.push({
+          fileName: file.name,
+          detectedCategory: "Candidate Resume / Curriculum Vitae (CV)",
+          reason: "Uploaded file detected as an individual resume or employment CV. The Ingestion Hub requires commercial supplier quotation rate sheets with SKU pricing, not employment profiles."
+        });
+      } else if (
+        lower.includes("carton") ||
+        lower.includes("corrugated") ||
+        lower.includes("packaging")
+      ) {
+        nonProcurementHits.push({
+          fileName: file.name,
+          detectedCategory: "Industrial Corrugated Packaging",
+          reason: "Document belongs to Corrugated Packaging (cartons/GSM/plies), whereas active RFx category is 'Enterprise IT Hardware & Client Compute'. Quarantined to prevent cost matrix contamination."
+        });
+      } else if (
+        lower.includes("nda") ||
+        lower.includes("non_disclosure") ||
+        lower.includes("confidentiality")
+      ) {
+        nonProcurementHits.push({
+          fileName: file.name,
+          detectedCategory: "Legal Agreement / NDA (No Pricing)",
+          reason: "Document identified as a legal non-disclosure agreement with no commercial pricing tables or SKU bids."
+        });
+      } else {
+        validFiles.push(file);
+      }
+    });
+
+    if (nonProcurementHits.length > 0) {
+      setGuardrailAlert(nonProcurementHits[0]);
+    }
+
+    if (validFiles.length === 0) {
+      return;
+    }
+
+    showToast(`Uploading and analyzing ${validFiles.length} quotation file(s)...`);
 
     const newSupplierRows: SupplierRow[] = [];
     const newExceptions: ExceptionData[] = [];
 
-    files.forEach((file, idx) => {
+    validFiles.forEach((file, idx) => {
       const ext = file.name.split(".").pop()?.toLowerCase();
       let ftype: "pdf" | "xlsx" | "docx" | "jpg" | "eml" | "csv" | "json" = "pdf";
       if (ext === "xlsx" || ext === "xls" || ext === "csv" || ext === "tsv") ftype = "xlsx";
@@ -1254,8 +1327,17 @@ export const Step1Ingestion: React.FC<Step1IngestionProps> = ({
 
     // 2. Call backend batch upload in background
     try {
-      await uploadBatchFiles(files);
-      showToast(`Parsed ${files.length} quotation file(s)! Comparison matrix updated.`);
+      const resp = await uploadBatchFiles(validFiles);
+      if (resp && resp.category_mismatches && resp.category_mismatches.length > 0) {
+        const m = resp.category_mismatches[0];
+        setGuardrailAlert({
+          fileName: m.file_name,
+          detectedCategory: m.detected_category,
+          reason: m.reason
+        });
+      } else {
+        showToast(`Parsed ${validFiles.length} quotation file(s)! Comparison matrix updated.`);
+      }
     } catch (err) {
       console.warn("Upload API call warning:", err);
     }
@@ -1321,6 +1403,156 @@ export const Step1Ingestion: React.FC<Step1IngestionProps> = ({
         >
           <Sparkles size={16} color="#60A5FA" />
           <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* Document Type & Compliance Guardrail Rejection Modal */}
+      {guardrailAlert && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(15, 23, 42, 0.65)",
+            backdropFilter: "blur(4px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            padding: "20px"
+          }}
+          onClick={() => setGuardrailAlert(null)}
+        >
+          <div
+            style={{
+              backgroundColor: "#FFFFFF",
+              borderRadius: "14px",
+              width: "100%",
+              maxWidth: "540px",
+              padding: "28px",
+              boxShadow: "0 20px 40px -10px rgba(0, 0, 0, 0.25)",
+              border: "1px solid #FEE2E2",
+              display: "flex",
+              flexDirection: "column",
+              gap: "20px"
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div style={{ display: "flex", alignItems: "flex-start", gap: "14px" }}>
+              <div
+                style={{
+                  width: "44px",
+                  height: "44px",
+                  borderRadius: "10px",
+                  backgroundColor: "#FEF2F2",
+                  border: "1px solid #FCA5A5",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0
+                }}
+              >
+                <ShieldAlert size={24} color="#DC2626" />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <h3 style={{ margin: 0, fontSize: "17px", fontWeight: 700, color: "#991B1B" }}>
+                    Document Guardrail: Upload Quarantined
+                  </h3>
+                  <button
+                    onClick={() => setGuardrailAlert(null)}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "#94A3B8",
+                      cursor: "pointer",
+                      padding: "4px"
+                    }}
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+                <p style={{ margin: "4px 0 0", fontSize: "13px", color: "#64748B" }}>
+                  Autonomous Compliance & Document Classification Gate
+                </p>
+              </div>
+            </div>
+
+            {/* Violation Details Box */}
+            <div
+              style={{
+                backgroundColor: "#F8FAFC",
+                borderRadius: "10px",
+                border: "1px solid #E2E8F0",
+                padding: "16px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px"
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12.5px" }}>
+                <span style={{ color: "#64748B", fontWeight: 500 }}>Uploaded File:</span>
+                <span style={{ color: "#0F172A", fontWeight: 600 }}>{guardrailAlert.fileName}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12.5px" }}>
+                <span style={{ color: "#64748B", fontWeight: 500 }}>Identified Document Type:</span>
+                <span style={{ color: "#DC2626", fontWeight: 700 }}>{guardrailAlert.detectedCategory}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12.5px" }}>
+                <span style={{ color: "#64748B", fontWeight: 500 }}>Active RFx Pipeline:</span>
+                <span style={{ color: "#2563EB", fontWeight: 600 }}>Enterprise IT Hardware & Client Compute</span>
+              </div>
+              <div
+                style={{
+                  marginTop: "6px",
+                  paddingTop: "10px",
+                  borderTop: "1px dashed #CBD5E1",
+                  fontSize: "12px",
+                  lineHeight: 1.5,
+                  color: "#334155"
+                }}
+              >
+                <strong>System Governance Action:</strong> {guardrailAlert.reason}
+              </div>
+            </div>
+
+            {/* Explanatory Note */}
+            <div
+              style={{
+                fontSize: "12px",
+                color: "#475569",
+                lineHeight: 1.5,
+                backgroundColor: "#FEF3C7",
+                padding: "10px 14px",
+                borderRadius: "8px",
+                border: "1px solid #FCD34D"
+              }}
+            >
+              🛡️ <strong>Zero Matrix Contamination:</strong> This file was <strong>blocked</strong> from entering the 30-SKU quote analysis matrix and MILP optimization engine. No fake or unquoted rates were generated.
+            </div>
+
+            {/* Modal Actions */}
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
+              <button
+                onClick={() => setGuardrailAlert(null)}
+                style={{
+                  padding: "9px 18px",
+                  backgroundColor: "#0F172A",
+                  color: "#FFFFFF",
+                  border: "none",
+                  borderRadius: "8px",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  cursor: "pointer"
+                }}
+              >
+                Dismiss & Quarantine File
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

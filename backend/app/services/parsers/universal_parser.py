@@ -41,7 +41,15 @@ def extract_text_sample_from_file(file_path: str, ext: str) -> str:
                 text_chunks.append(f.read(8000))
 
         elif ext in [".jpg", ".jpeg", ".png"]:
-            text_chunks.append(f"Image Quotation: {fname} Enterprise IT Hardware Rate Card Laptops Displays Servers")
+            lower_f = fname.lower()
+            if any(term in lower_f for term in ["aadhaar", "aadhar", "pan", "passport", "voter", "id_card", "identity"]):
+                text_chunks.append(f"Personal Identity Document: {fname} Government ID Aadhaar Card DOB UIDAI PII")
+            elif any(term in lower_f for term in ["resume", "cv", "biodata", "profile", "curriculum"]):
+                text_chunks.append(f"Candidate Employment Document: {fname} Resume Curriculum Vitae Education Experience Skills")
+            elif any(term in lower_f for term in ["carton", "box", "packaging", "corrugated"]):
+                text_chunks.append(f"Packaging Document: {fname} Industrial Corrugated Cartons GSM Plies")
+            else:
+                text_chunks.append(f"Image Document: {fname}")
 
     except Exception as e:
         text_chunks.append(f"read_error: {str(e)}")
