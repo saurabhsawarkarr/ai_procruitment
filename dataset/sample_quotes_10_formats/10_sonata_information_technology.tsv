@@ -1,0 +1,31 @@
+LINE_NUMBER	SKU_CODE	ITEM_DESCRIPTION	CATEGORY	ANNUAL_QUANTITY	UNIT_PRICE_INR	INCOTERM	LEAD_TIME_DAYS	PAYMENT_TERMS
+1	SKU-001	ThinkPad T14s Gen 5 Ultrabook	Client Compute & Laptops	120	104991.0	DDP	8	Net 45 Days
+2	SKU-002	Dell Latitude 5440 Enterprise Laptop	Client Compute & Laptops	200	76373.2	DDP	8	Net 45 Days
+3	SKU-003	Apple MacBook Pro 14 M3 Pro	Client Compute & Laptops	45	212551.4	DDP	8	Net 45 Days
+4	SKU-004	HP EliteBook 840 G10 Business Notebook	Client Compute & Laptops	110	110307.0	DDP	8	Net 45 Days
+5	SKU-005	Dell Precision 7680 Mobile Workstation	Client Compute & Laptops	25	308328.0	DDP	8	Net 45 Days
+6	SKU-006	Lenovo ThinkPad X1 Carbon Gen 12	Client Compute & Laptops	35	167454.0	DDP	8	Net 45 Days
+7	SKU-007	Apple MacBook Air 15 M3	Client Compute & Laptops	60	128381.4	DDP	8	Net 45 Days
+8	SKU-008	Dell OptiPlex 7010 Micro Desktop	Client Compute & Laptops	80	55375.0	DDP	8	Net 45 Days
+9	SKU-009	HP ZBook Firefly 14 G10 Workstation	Client Compute & Laptops	40	123154.0	DDP	8	Net 45 Days
+10	SKU-010	Lenovo ThinkCentre M90q Tiny Workstation	Client Compute & Laptops	50	81512.0	DDP	8	Net 45 Days
+11	SKU-011	Dell Latitude 7440 Ultralight	Client Compute & Laptops	40	125812.0	DDP	8	Net 45 Days
+12	SKU-012	Microsoft Surface Laptop 6 for Business	Client Compute & Laptops	30	136444.0	DDP	8	Net 45 Days
+13	SKU-013	Dell UltraSharp 27 4K USB-C Hub Monitor (U2723QE)	Displays, Docks & Peripherals	180	48287.0	DDP	8	Net 45 Days
+14	SKU-014	"Lenovo ThinkVision P34w-20 34"" Curved Monitor"	Displays, Docks & Peripherals	40	63792.0	DDP	8	Net 45 Days
+15	SKU-015	Dell Thunderbolt 4 Universal Dock (WD22TB4)	Displays, Docks & Peripherals	160	23744.8	DDP	8	Net 45 Days
+16	SKU-016	"HP E24 G5 24"" FHD Workspace Monitor"	Displays, Docks & Peripherals	250	13467.2	DDP	8	Net 45 Days
+17	SKU-017	Logitech MX Master 3S + Mechanical Combo	Displays, Docks & Peripherals	150	17542.8	DDP	8	Net 45 Days
+18	SKU-018	Jabra Evolve2 65 Wireless ANC Headset	Displays, Docks & Peripherals	140	16391.0	DDP	8	Net 45 Days
+19	SKU-019	Dell UltraSharp 32 6K Monitor (U3224KB)	Displays, Docks & Peripherals	15	167454.0	DDP	8	Net 45 Days
+20	SKU-020	Lenovo ThinkPad Universal Thunderbolt 4 Dock	Displays, Docks & Peripherals	80	25162.4	DDP	8	Net 45 Days
+21	SKU-021	Logitech Brio 4K Ultra HD Business Webcam	Displays, Docks & Peripherals	90	14884.8	DDP	8	Net 45 Days
+22	SKU-022	APC Back-UPS Pro 1500VA Desktop UPS	Displays, Docks & Peripherals	70	15239.2	DDP	8	Net 45 Days
+23	SKU-023	Dell PowerEdge R760 2U Rack Server	Enterprise Infrastructure & Servers	8	1010040.0	DDP	8	Net 45 Days
+24	SKU-024	HPE ProLiant DL380 Gen11 2U Server	Enterprise Infrastructure & Servers	10	691080.0	DDP	8	Net 45 Days
+25	SKU-025	Cisco Catalyst 9300 48-Port PoE+ Switch	Enterprise Infrastructure & Servers	12	411990.0	DDP	8	Net 45 Days
+26	SKU-026	Fortinet FortiGate 100F Next-Gen Firewall	Enterprise Infrastructure & Servers	6	341110.0	DDP	8	Net 45 Days
+27	SKU-027	Aruba CX 6200F 24-Port Gigabit Access Switch	Enterprise Infrastructure & Servers	14	208210.0	DDP	8	Net 45 Days
+28	SKU-028	Dell PowerEdge R660 1U High-Density Server	Enterprise Infrastructure & Servers	8	726520.0	DDP	8	Net 45 Days
+29	SKU-029	Synology Enterprise 12-Bay RackStation NAS (RS3621RPxs)	Enterprise Infrastructure & Servers	4	611340.0	DDP	8	Net 45 Days
+30	SKU-030	APC Smart-UPS On-Line 3000VA 2U Rackmount UPS	Enterprise Infrastructure & Servers	8	217070.0	DDP	8	Net 45 Days

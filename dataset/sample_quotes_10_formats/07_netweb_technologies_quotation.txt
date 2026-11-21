@@ -1,0 +1,42 @@
+==============================================================================================
+NETWEB TECHNOLOGIES INDIA LTD — ENTERPRISE COMPUTING BID MEMORANDUM
+Tender ID: AER-FY2026-IT-HW-001 | Date: 21-Nov-2026
+Incoterms: DDP Tech Centers | Payment Terms: Net 30 Days | Turnaround SLA: 8 Days
+==============================================================================================
++------+----------+----------------------------------------+-------+------------------+-----+
+| LINE | SKU CODE | ITEM SPECIFICATION                     | QTY   | UNIT RATE (INR)  | TERM|
++------+----------+----------------------------------------+-------+------------------+-----+
+| 1    | SKU-001  | ThinkPad T14s Gen 5 Ultrabook          | 120   | INR   105,939.00 | DDP |
+| 2    | SKU-002  | Dell Latitude 5440 Enterprise Laptop   | 200   | INR    77,062.80 | DDP |
+| 3    | SKU-003  | Apple MacBook Pro 14 M3 Pro            | 45    | INR   214,470.60 | DDP |
+| 4    | SKU-004  | HP EliteBook 840 G10 Business Notebook | 110   | INR   111,303.00 | DDP |
+| 5    | SKU-005  | Dell Precision 7680 Mobile Workstation | 25    | INR   311,112.00 | DDP |
+| 6    | SKU-006  | Lenovo ThinkPad X1 Carbon Gen 12       | 35    | INR   168,966.00 | DDP |
+| 7    | SKU-007  | Apple MacBook Air 15 M3                | 60    | INR   129,540.60 | DDP |
+| 8    | SKU-008  | Dell OptiPlex 7010 Micro Desktop       | 80    | INR    55,875.00 | DDP |
+| 9    | SKU-009  | HP ZBook Firefly 14 G10 Workstation    | 40    | INR   124,266.00 | DDP |
+| 10   | SKU-010  | Lenovo ThinkCentre M90q Tiny Workstati | 50    | INR    82,248.00 | DDP |
+| 11   | SKU-011  | Dell Latitude 7440 Ultralight          | 40    | INR   126,948.00 | DDP |
+| 12   | SKU-012  | Microsoft Surface Laptop 6 for Busines | 30    | INR   137,676.00 | DDP |
+| 13   | SKU-013  | Dell UltraSharp 27 4K USB-C Hub Monito | 180   | INR    48,723.00 | DDP |
+| 14   | SKU-014  | Lenovo ThinkVision P34w-20 34" Curved  | 40    | INR    64,368.00 | DDP |
+| 15   | SKU-015  | Dell Thunderbolt 4 Universal Dock (WD2 | 160   | INR    23,959.20 | DDP |
+| 16   | SKU-016  | HP E24 G5 24" FHD Workspace Monitor    | 250   | INR    13,588.80 | DDP |
+| 17   | SKU-017  | Logitech MX Master 3S + Mechanical Com | 150   | INR    17,701.20 | DDP |
+| 18   | SKU-018  | Jabra Evolve2 65 Wireless ANC Headset  | 140   | INR    16,539.00 | DDP |
+| 19   | SKU-019  | Dell UltraSharp 32 6K Monitor (U3224KB | 15    | INR   168,966.00 | DDP |
+| 20   | SKU-020  | Lenovo ThinkPad Universal Thunderbolt  | 80    | INR    25,389.60 | DDP |
+| 21   | SKU-021  | Logitech Brio 4K Ultra HD Business Web | 90    | INR    15,019.20 | DDP |
+| 22   | SKU-022  | APC Back-UPS Pro 1500VA Desktop UPS    | 70    | INR    15,376.80 | DDP |
+| 23   | SKU-023  | Dell PowerEdge R760 2U Rack Server     | 8     | INR 1,019,160.00 | DDP |
+| 24   | SKU-024  | HPE ProLiant DL380 Gen11 2U Server     | 10    | INR   697,320.00 | DDP |
+| 25   | SKU-025  | Cisco Catalyst 9300 48-Port PoE+ Switc | 12    | INR   415,710.00 | DDP |
+| 26   | SKU-026  | Fortinet FortiGate 100F Next-Gen Firew | 6     | INR   344,190.00 | DDP |
+| 27   | SKU-027  | Aruba CX 6200F 24-Port Gigabit Access  | 14    | INR   210,090.00 | DDP |
+| 28   | SKU-028  | Dell PowerEdge R660 1U High-Density Se | 8     | INR   733,080.00 | DDP |
+| 29   | SKU-029  | Synology Enterprise 12-Bay RackStation | 4     | INR   616,860.00 | DDP |
+| 30   | SKU-030  | APC Smart-UPS On-Line 3000VA 2U Rackmo | 8     | INR   219,030.00 | DDP |
++------+----------+----------------------------------------+-------+------------------+-----+
+Total Estimated Proposal Value: INR 15,99,90,885.00
+Bank Wire Transfer: State Bank of India, Corporate Branch Mumbai, IFSC: SBIN0000300
+==============================================================================================

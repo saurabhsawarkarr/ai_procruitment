@@ -1,0 +1,316 @@
+{
+  "rfq_id": "AER-RFX-2026-IT-001",
+  "vendor_id": "VEND-ANA-08",
+  "vendor_name": "Ananya Cloud & Hardware Systems",
+  "quotation_date": "2026-11-21T09:30:00Z",
+  "valid_until": "2027-03-31T23:59:59Z",
+  "commercial_terms": {
+    "incoterm": "DDP Delivered",
+    "payment_terms": "Net 45 Days",
+    "delivery_lead_time_days": 8,
+    "warranty_terms": "3-Year OEM Premier Onsite",
+    "currency": "INR"
+  },
+  "quotation_items": [
+    {
+      "line_number": 1,
+      "sku_code": "SKU-001",
+      "item_name": "ThinkPad T14s Gen 5 Ultrabook",
+      "category": "Client Compute & Laptops",
+      "quantity": 120,
+      "unit_price_inr": 105109.5,
+      "extended_total_inr": 12613140.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 2,
+      "sku_code": "SKU-002",
+      "item_name": "Dell Latitude 5440 Enterprise Laptop",
+      "category": "Client Compute & Laptops",
+      "quantity": 200,
+      "unit_price_inr": 76459.4,
+      "extended_total_inr": 15291880.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 3,
+      "sku_code": "SKU-003",
+      "item_name": "Apple MacBook Pro 14 M3 Pro",
+      "category": "Client Compute & Laptops",
+      "quantity": 45,
+      "unit_price_inr": 212791.3,
+      "extended_total_inr": 9575608.5,
+      "in_stock": true
+    },
+    {
+      "line_number": 4,
+      "sku_code": "SKU-004",
+      "item_name": "HP EliteBook 840 G10 Business Notebook",
+      "category": "Client Compute & Laptops",
+      "quantity": 110,
+      "unit_price_inr": 110431.5,
+      "extended_total_inr": 12147465.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 5,
+      "sku_code": "SKU-005",
+      "item_name": "Dell Precision 7680 Mobile Workstation",
+      "category": "Client Compute & Laptops",
+      "quantity": 25,
+      "unit_price_inr": 308676.0,
+      "extended_total_inr": 7716900.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 6,
+      "sku_code": "SKU-006",
+      "item_name": "Lenovo ThinkPad X1 Carbon Gen 12",
+      "category": "Client Compute & Laptops",
+      "quantity": 35,
+      "unit_price_inr": 167643.0,
+      "extended_total_inr": 5867505.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 7,
+      "sku_code": "SKU-007",
+      "item_name": "Apple MacBook Air 15 M3",
+      "category": "Client Compute & Laptops",
+      "quantity": 60,
+      "unit_price_inr": 128526.3,
+      "extended_total_inr": 7711578.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 8,
+      "sku_code": "SKU-008",
+      "item_name": "Dell OptiPlex 7010 Micro Desktop",
+      "category": "Client Compute & Laptops",
+      "quantity": 80,
+      "unit_price_inr": 55437.5,
+      "extended_total_inr": 4435000.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 9,
+      "sku_code": "SKU-009",
+      "item_name": "HP ZBook Firefly 14 G10 Workstation",
+      "category": "Client Compute & Laptops",
+      "quantity": 40,
+      "unit_price_inr": 123293.0,
+      "extended_total_inr": 4931720.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 10,
+      "sku_code": "SKU-010",
+      "item_name": "Lenovo ThinkCentre M90q Tiny Workstation",
+      "category": "Client Compute & Laptops",
+      "quantity": 50,
+      "unit_price_inr": 81604.0,
+      "extended_total_inr": 4080200.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 11,
+      "sku_code": "SKU-011",
+      "item_name": "Dell Latitude 7440 Ultralight",
+      "category": "Client Compute & Laptops",
+      "quantity": 40,
+      "unit_price_inr": 125954.0,
+      "extended_total_inr": 5038160.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 12,
+      "sku_code": "SKU-012",
+      "item_name": "Microsoft Surface Laptop 6 for Business",
+      "category": "Client Compute & Laptops",
+      "quantity": 30,
+      "unit_price_inr": 136598.0,
+      "extended_total_inr": 4097940.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 13,
+      "sku_code": "SKU-013",
+      "item_name": "Dell UltraSharp 27 4K USB-C Hub Monitor (U2723QE)",
+      "category": "Displays, Docks & Peripherals",
+      "quantity": 180,
+      "unit_price_inr": 48341.5,
+      "extended_total_inr": 8701470.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 14,
+      "sku_code": "SKU-014",
+      "item_name": "Lenovo ThinkVision P34w-20 34\" Curved Monitor",
+      "category": "Displays, Docks & Peripherals",
+      "quantity": 40,
+      "unit_price_inr": 63864.0,
+      "extended_total_inr": 2554560.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 15,
+      "sku_code": "SKU-015",
+      "item_name": "Dell Thunderbolt 4 Universal Dock (WD22TB4)",
+      "category": "Displays, Docks & Peripherals",
+      "quantity": 160,
+      "unit_price_inr": 23771.6,
+      "extended_total_inr": 3803456.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 16,
+      "sku_code": "SKU-016",
+      "item_name": "HP E24 G5 24\" FHD Workspace Monitor",
+      "category": "Displays, Docks & Peripherals",
+      "quantity": 250,
+      "unit_price_inr": 13482.4,
+      "extended_total_inr": 3370600.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 17,
+      "sku_code": "SKU-017",
+      "item_name": "Logitech MX Master 3S + Mechanical Combo",
+      "category": "Displays, Docks & Peripherals",
+      "quantity": 150,
+      "unit_price_inr": 17562.6,
+      "extended_total_inr": 2634390.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 18,
+      "sku_code": "SKU-018",
+      "item_name": "Jabra Evolve2 65 Wireless ANC Headset",
+      "category": "Displays, Docks & Peripherals",
+      "quantity": 140,
+      "unit_price_inr": 16409.5,
+      "extended_total_inr": 2297330.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 19,
+      "sku_code": "SKU-019",
+      "item_name": "Dell UltraSharp 32 6K Monitor (U3224KB)",
+      "category": "Displays, Docks & Peripherals",
+      "quantity": 15,
+      "unit_price_inr": 167643.0,
+      "extended_total_inr": 2514645.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 20,
+      "sku_code": "SKU-020",
+      "item_name": "Lenovo ThinkPad Universal Thunderbolt 4 Dock",
+      "category": "Displays, Docks & Peripherals",
+      "quantity": 80,
+      "unit_price_inr": 25190.8,
+      "extended_total_inr": 2015264.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 21,
+      "sku_code": "SKU-021",
+      "item_name": "Logitech Brio 4K Ultra HD Business Webcam",
+      "category": "Displays, Docks & Peripherals",
+      "quantity": 90,
+      "unit_price_inr": 14901.6,
+      "extended_total_inr": 1341144.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 22,
+      "sku_code": "SKU-022",
+      "item_name": "APC Back-UPS Pro 1500VA Desktop UPS",
+      "category": "Displays, Docks & Peripherals",
+      "quantity": 70,
+      "unit_price_inr": 15256.4,
+      "extended_total_inr": 1067948.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 23,
+      "sku_code": "SKU-023",
+      "item_name": "Dell PowerEdge R760 2U Rack Server",
+      "category": "Enterprise Infrastructure & Servers",
+      "quantity": 8,
+      "unit_price_inr": 1011180.0,
+      "extended_total_inr": 8089440.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 24,
+      "sku_code": "SKU-024",
+      "item_name": "HPE ProLiant DL380 Gen11 2U Server",
+      "category": "Enterprise Infrastructure & Servers",
+      "quantity": 10,
+      "unit_price_inr": 691860.0,
+      "extended_total_inr": 6918600.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 25,
+      "sku_code": "SKU-025",
+      "item_name": "Cisco Catalyst 9300 48-Port PoE+ Switch",
+      "category": "Enterprise Infrastructure & Servers",
+      "quantity": 12,
+      "unit_price_inr": 412455.0,
+      "extended_total_inr": 4949460.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 26,
+      "sku_code": "SKU-026",
+      "item_name": "Fortinet FortiGate 100F Next-Gen Firewall",
+      "category": "Enterprise Infrastructure & Servers",
+      "quantity": 6,
+      "unit_price_inr": 341495.0,
+      "extended_total_inr": 2048970.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 27,
+      "sku_code": "SKU-027",
+      "item_name": "Aruba CX 6200F 24-Port Gigabit Access Switch",
+      "category": "Enterprise Infrastructure & Servers",
+      "quantity": 14,
+      "unit_price_inr": 208445.0,
+      "extended_total_inr": 2918230.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 28,
+      "sku_code": "SKU-028",
+      "item_name": "Dell PowerEdge R660 1U High-Density Server",
+      "category": "Enterprise Infrastructure & Servers",
+      "quantity": 8,
+      "unit_price_inr": 727340.0,
+      "extended_total_inr": 5818720.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 29,
+      "sku_code": "SKU-029",
+      "item_name": "Synology Enterprise 12-Bay RackStation NAS (RS3621RPxs)",
+      "category": "Enterprise Infrastructure & Servers",
+      "quantity": 4,
+      "unit_price_inr": 612030.0,
+      "extended_total_inr": 2448120.0,
+      "in_stock": true
+    },
+    {
+      "line_number": 30,
+      "sku_code": "SKU-030",
+      "item_name": "APC Smart-UPS On-Line 3000VA 2U Rackmount UPS",
+      "category": "Enterprise Infrastructure & Servers",
+      "quantity": 8,
+      "unit_price_inr": 217315.0,
+      "extended_total_inr": 1738520.0,
+      "in_stock": true
+    }
+  ]
+}

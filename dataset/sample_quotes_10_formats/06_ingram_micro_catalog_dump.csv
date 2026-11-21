@@ -1,0 +1,31 @@
+Line_No,SKU_Code,Vendor_Part_No,Item_Description,Category,Annual_Demand,Quoted_Unit_Price_INR,Currency,Incoterm,Lead_Time_Days,Payment_Terms
+1,SKU-001,ING-SKU-001-2026,ThinkPad T14s Gen 5 Ultrabook,Client Compute & Laptops,120,106413.0,INR,DDP,8,Net 45 Days
+2,SKU-002,ING-SKU-002-2026,Dell Latitude 5440 Enterprise Laptop,Client Compute & Laptops,200,77407.6,INR,DDP,8,Net 45 Days
+3,SKU-003,ING-SKU-003-2026,Apple MacBook Pro 14 M3 Pro,Client Compute & Laptops,45,215430.2,INR,DDP,8,Net 45 Days
+4,SKU-004,ING-SKU-004-2026,HP EliteBook 840 G10 Business Notebook,Client Compute & Laptops,110,111801.0,INR,DDP,8,Net 45 Days
+5,SKU-005,ING-SKU-005-2026,Dell Precision 7680 Mobile Workstation,Client Compute & Laptops,25,312504.0,INR,DDP,8,Net 45 Days
+6,SKU-006,ING-SKU-006-2026,Lenovo ThinkPad X1 Carbon Gen 12,Client Compute & Laptops,35,169722.0,INR,DDP,8,Net 45 Days
+7,SKU-007,ING-SKU-007-2026,Apple MacBook Air 15 M3,Client Compute & Laptops,60,130120.2,INR,DDP,8,Net 45 Days
+8,SKU-008,ING-SKU-008-2026,Dell OptiPlex 7010 Micro Desktop,Client Compute & Laptops,80,56125.0,INR,DDP,8,Net 45 Days
+9,SKU-009,ING-SKU-009-2026,HP ZBook Firefly 14 G10 Workstation,Client Compute & Laptops,40,124822.0,INR,DDP,8,Net 45 Days
+10,SKU-010,ING-SKU-010-2026,Lenovo ThinkCentre M90q Tiny Workstation,Client Compute & Laptops,50,82616.0,INR,DDP,8,Net 45 Days
+11,SKU-011,ING-SKU-011-2026,Dell Latitude 7440 Ultralight,Client Compute & Laptops,40,127516.0,INR,DDP,8,Net 45 Days
+12,SKU-012,ING-SKU-012-2026,Microsoft Surface Laptop 6 for Business,Client Compute & Laptops,30,138292.0,INR,DDP,8,Net 45 Days
+13,SKU-013,ING-SKU-013-2026,Dell UltraSharp 27 4K USB-C Hub Monitor (U2723QE),"Displays, Docks & Peripherals",180,48941.0,INR,DDP,8,Net 45 Days
+14,SKU-014,ING-SKU-014-2026,"Lenovo ThinkVision P34w-20 34"" Curved Monitor","Displays, Docks & Peripherals",40,64656.0,INR,DDP,8,Net 45 Days
+15,SKU-015,ING-SKU-015-2026,Dell Thunderbolt 4 Universal Dock (WD22TB4),"Displays, Docks & Peripherals",160,24066.4,INR,DDP,8,Net 45 Days
+16,SKU-016,ING-SKU-016-2026,"HP E24 G5 24"" FHD Workspace Monitor","Displays, Docks & Peripherals",250,13649.6,INR,DDP,8,Net 45 Days
+17,SKU-017,ING-SKU-017-2026,Logitech MX Master 3S + Mechanical Combo,"Displays, Docks & Peripherals",150,17780.4,INR,DDP,8,Net 45 Days
+18,SKU-018,ING-SKU-018-2026,Jabra Evolve2 65 Wireless ANC Headset,"Displays, Docks & Peripherals",140,16613.0,INR,DDP,8,Net 45 Days
+19,SKU-019,ING-SKU-019-2026,Dell UltraSharp 32 6K Monitor (U3224KB),"Displays, Docks & Peripherals",15,169722.0,INR,DDP,8,Net 45 Days
+20,SKU-020,ING-SKU-020-2026,Lenovo ThinkPad Universal Thunderbolt 4 Dock,"Displays, Docks & Peripherals",80,25503.2,INR,DDP,8,Net 45 Days
+21,SKU-021,ING-SKU-021-2026,Logitech Brio 4K Ultra HD Business Webcam,"Displays, Docks & Peripherals",90,15086.4,INR,DDP,8,Net 45 Days
+22,SKU-022,ING-SKU-022-2026,APC Back-UPS Pro 1500VA Desktop UPS,"Displays, Docks & Peripherals",70,15445.6,INR,DDP,8,Net 45 Days
+23,SKU-023,ING-SKU-023-2026,Dell PowerEdge R760 2U Rack Server,Enterprise Infrastructure & Servers,8,1023720.0,INR,DDP,8,Net 45 Days
+24,SKU-024,ING-SKU-024-2026,HPE ProLiant DL380 Gen11 2U Server,Enterprise Infrastructure & Servers,10,700440.0,INR,DDP,8,Net 45 Days
+25,SKU-025,ING-SKU-025-2026,Cisco Catalyst 9300 48-Port PoE+ Switch,Enterprise Infrastructure & Servers,12,417570.0,INR,DDP,8,Net 45 Days
+26,SKU-026,ING-SKU-026-2026,Fortinet FortiGate 100F Next-Gen Firewall,Enterprise Infrastructure & Servers,6,345730.0,INR,DDP,8,Net 45 Days
+27,SKU-027,ING-SKU-027-2026,Aruba CX 6200F 24-Port Gigabit Access Switch,Enterprise Infrastructure & Servers,14,211030.0,INR,DDP,8,Net 45 Days
+28,SKU-028,ING-SKU-028-2026,Dell PowerEdge R660 1U High-Density Server,Enterprise Infrastructure & Servers,8,736360.0,INR,DDP,8,Net 45 Days
+29,SKU-029,ING-SKU-029-2026,Synology Enterprise 12-Bay RackStation NAS (RS3621RPxs),Enterprise Infrastructure & Servers,4,619620.0,INR,DDP,8,Net 45 Days
+30,SKU-030,ING-SKU-030-2026,APC Smart-UPS On-Line 3000VA 2U Rackmount UPS,Enterprise Infrastructure & Servers,8,220010.0,INR,DDP,8,Net 45 Days
