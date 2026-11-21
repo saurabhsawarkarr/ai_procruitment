@@ -38,16 +38,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const stages = [
     {
-      number: 0,
-      title: "0. Draft & Dispatch",
-      subtext: "AI Co-pilot RFx Authoring",
-      icon: Sparkles,
-      badge: "AI Co-Pilot",
-      badgeBg: "#EFF6FF",
-      badgeColor: "#1D4ED8",
-      badgeBorder: "#BFDBFE"
-    },
-    {
       number: 1,
       title: "1. Upload & Extract",
       subtext: `${supplierCount} Supplier Quotes`,

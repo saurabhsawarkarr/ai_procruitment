@@ -51,6 +51,7 @@ export const Step2Review: React.FC<Step2ReviewProps> = ({
   const [isReasoningOpen, setIsReasoningOpen] = useState<boolean>(true);
   const [isAssumptionsOpen, setIsAssumptionsOpen] = useState<boolean>(false);
   const [provenanceToast, setProvenanceToast] = useState<string | null>(null);
+  const [autoTransitionNotice, setAutoTransitionNotice] = useState<string | null>(null);
 
   useEffect(() => {
     if (selectedExceptionId && exceptions.some(e => e.id === selectedExceptionId)) {
@@ -115,9 +116,77 @@ export const Step2Review: React.FC<Step2ReviewProps> = ({
     }
   };
 
+  // Move to next unresolved exception, or automatically proceed to Step 3 if all are verified
+  const advanceToNextException = (currentExceptions: ExceptionData[] = exceptions) => {
+    const unresolved = currentExceptions.filter(
+      e => !e.isResolved && e.statusBadge !== "Resolved" && e.statusBadge !== "Deviation accepted"
+    );
+
+    if (unresolved.length === 0) {
+      // All documents & exceptions verified -> automatically transition to Step 3
+      setAutoTransitionNotice("All supplier documents & exceptions verified! Auto-transitioning to Step 3: Compare & Optimize...");
+      setTimeout(() => {
+        onProceedToAnalysis();
+      }, 500);
+      return;
+    }
+
+    // Advance to next unresolved item
+    const nextUnresolved =
+      currentExceptions.find((e, idx) => !e.isResolved && idx > selectedExceptionIndex) ||
+      unresolved[0];
+
+    if (nextUnresolved) {
+      setLocalSelectedId(nextUnresolved.id);
+      onSelectExceptionId?.(nextUnresolved.id);
+    }
+  };
+
+  // Quick verify a single exception directly
+  const handleQuickVerifyOne = (excId: string) => {
+    const updated = exceptions.map(e => {
+      if (e.id === excId) {
+        return {
+          ...e,
+          isResolved: true,
+          statusBadge: "Resolved" as ExceptionStatusBadge,
+          statusColor: "#059669"
+        };
+      }
+      return e;
+    });
+    onUpdateExceptions(updated);
+    advanceToNextException(updated);
+  };
+
+  // Batch verify all documents and transition to Step 3
+  const handleBatchVerifyAll = () => {
+    const updated = exceptions.map(e => ({
+      ...e,
+      isResolved: true,
+      selectedAction: e.selectedAction || ("confirm" as ActionChoice),
+      statusBadge: (e.selectedAction === "accept" ? "Deviation accepted" : "Resolved") as ExceptionStatusBadge,
+      statusColor: e.selectedAction === "accept" ? "#0284C7" : "#059669"
+    }));
+    onUpdateExceptions(updated);
+    setAutoTransitionNotice("All supplier documents & exceptions verified! Auto-transitioning to Step 3: Compare & Optimize...");
+    setTimeout(() => {
+      onProceedToAnalysis();
+    }, 500);
+  };
+
   // Primary Contextual Button Handler
   const handlePrimaryContextualAction = () => {
     if (!activeExc) return;
+
+    // If all are already verified, proceed to Step 3 immediately
+    const isAll = exceptions.length > 0 && exceptions.every(
+      e => e.isResolved || e.statusBadge === "Resolved" || e.statusBadge === "Deviation accepted"
+    );
+    if (isAll) {
+      onProceedToAnalysis();
+      return;
+    }
 
     if (activeExc.isResolved) {
       advanceToNextException();
@@ -157,27 +226,6 @@ export const Step2Review: React.FC<Step2ReviewProps> = ({
     advanceToNextException(updated);
   };
 
-  const advanceToNextException = (currentExceptions: ExceptionData[] = exceptions) => {
-    const nextUnresolved = currentExceptions.find(
-      (e, idx) => !e.isResolved && idx > selectedExceptionIndex
-    );
-    if (nextUnresolved) {
-      setLocalSelectedId(nextUnresolved.id);
-      onSelectExceptionId?.(nextUnresolved.id);
-    } else {
-      const anyUnresolved = currentExceptions.find(e => !e.isResolved);
-      if (anyUnresolved) {
-        setLocalSelectedId(anyUnresolved.id);
-        onSelectExceptionId?.(anyUnresolved.id);
-      } else if (selectedExceptionIndex < currentExceptions.length - 1) {
-        setLocalSelectedId(currentExceptions[selectedExceptionIndex + 1].id);
-        onSelectExceptionId?.(currentExceptions[selectedExceptionIndex + 1].id);
-      } else {
-        onProceedToAnalysis();
-      }
-    }
-  };
-
   const handleReopenForReview = () => {
     if (!activeExc) return;
     const updated = exceptions.map(e => {
@@ -196,10 +244,22 @@ export const Step2Review: React.FC<Step2ReviewProps> = ({
 
   // Helper for Contextual Primary Button Labels & Icons
   const getPrimaryButtonMeta = () => {
-    if (activeExc.isResolved) {
-      const isLast = selectedExceptionIndex === exceptions.length - 1;
+    const isAll = exceptions.length > 0 && exceptions.every(
+      e => e.isResolved || e.statusBadge === "Resolved" || e.statusBadge === "Deviation accepted"
+    );
+
+    if (isAll) {
       return {
-        label: isLast ? "Compare Verified Quotes" : "✓ Decision Saved (Resolved) • Next Exception",
+        label: "Proceed to Stage 3: Scenario Analysis",
+        icon: <ArrowRight size={16} />,
+        bg: "#059669",
+        hoverBg: "#047857"
+      };
+    }
+
+    if (activeExc.isResolved) {
+      return {
+        label: "✓ Verified (Resolved) • Next Exception",
         icon: <ArrowRight size={16} />,
         bg: "#059669",
         hoverBg: "#047857"
@@ -243,17 +303,6 @@ export const Step2Review: React.FC<Step2ReviewProps> = ({
           hoverBg: "#1D4ED8"
         };
     }
-  };
-
-  const handleBatchVerifyAll = () => {
-    const updated = exceptions.map(e => ({
-      ...e,
-      isResolved: true,
-      selectedAction: e.selectedAction || ("confirm" as ActionChoice),
-      statusBadge: (e.selectedAction === "accept" ? "Deviation accepted" : "Resolved") as ExceptionStatusBadge,
-      statusColor: e.selectedAction === "accept" ? "#0284C7" : "#059669"
-    }));
-    onUpdateExceptions(updated);
   };
 
   const primaryMeta = getPrimaryButtonMeta();
@@ -560,8 +609,102 @@ export const Step2Review: React.FC<Step2ReviewProps> = ({
               </div>
             </div>
           </div>
+
+          {/* Quick Action: Batch Verify All or Proceed */}
+          <button
+            onClick={() => {
+              if (pendingCount > 0) {
+                handleBatchVerifyAll();
+              } else {
+                onProceedToAnalysis();
+              }
+            }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              backgroundColor: "#059669",
+              color: "#FFFFFF",
+              border: "none",
+              borderRadius: "12px",
+              padding: "12px 20px",
+              fontSize: "13px",
+              fontWeight: 700,
+              cursor: "pointer",
+              boxShadow: "0 2px 6px rgba(5, 150, 105, 0.25)",
+              transition: "all 0.15s ease"
+            }}
+            onMouseEnter={e => (e.currentTarget.style.backgroundColor = "#047857")}
+            onMouseLeave={e => (e.currentTarget.style.backgroundColor = "#059669")}
+          >
+            <CheckCircle2 size={16} />
+            <span>{pendingCount > 0 ? `Verify All & Proceed to Step 3 (${pendingCount})` : "Proceed to Stage 3: Optimization"}</span>
+            <ArrowRight size={15} />
+          </button>
         </div>
       </div>
+
+      {/* Auto-Transition Notice Alert */}
+      {autoTransitionNotice && (
+        <div
+          style={{
+            backgroundColor: "#ECFDF5",
+            border: "1.5px solid #10B981",
+            borderRadius: "12px",
+            padding: "14px 22px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            color: "#065F46",
+            boxShadow: "0 4px 12px rgba(16, 185, 129, 0.15)"
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <div
+              style={{
+                width: "36px",
+                height: "36px",
+                borderRadius: "50%",
+                backgroundColor: "#D1FAE5",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0
+              }}
+            >
+              <CheckCircle2 size={20} color="#059669" />
+            </div>
+            <div>
+              <div style={{ fontWeight: 800, fontSize: "14px", color: "#065F46" }}>
+                ✓ All Quotations & Exceptions Successfully Verified!
+              </div>
+              <div style={{ fontSize: "12.5px", color: "#047857", marginTop: "2px" }}>
+                {autoTransitionNotice}
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={onProceedToAnalysis}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              backgroundColor: "#059669",
+              color: "#FFFFFF",
+              border: "none",
+              borderRadius: "8px",
+              padding: "9px 18px",
+              fontSize: "13px",
+              fontWeight: 700,
+              cursor: "pointer",
+              boxShadow: "0 2px 4px rgba(5, 150, 105, 0.2)"
+            }}
+          >
+            <span>Proceed Now</span>
+            <ArrowRight size={15} />
+          </button>
+        </div>
+      )}
 
       {/* 2. Main Two-Column Interactive Layout */}
       <div
@@ -614,6 +757,34 @@ export const Step2Review: React.FC<Step2ReviewProps> = ({
               {exceptions.length} Total
             </span>
           </div>
+
+          {pendingCount > 0 && (
+            <button
+              onClick={handleBatchVerifyAll}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                width: "100%",
+                padding: "8px 12px",
+                backgroundColor: "#ECFDF5",
+                color: "#047857",
+                border: "1px solid #A7F3D0",
+                borderRadius: "8px",
+                fontSize: "12px",
+                fontWeight: 700,
+                cursor: "pointer",
+                marginBottom: "4px",
+                transition: "all 0.15s ease"
+              }}
+              onMouseEnter={e => (e.currentTarget.style.backgroundColor = "#D1FAE5")}
+              onMouseLeave={e => (e.currentTarget.style.backgroundColor = "#ECFDF5")}
+            >
+              <CheckCircle2 size={13} color="#059669" />
+              <span>Verify All ({pendingCount} pending)</span>
+            </button>
+          )}
 
           {exceptions.map((exc) => {
             const isSelected = activeExc && activeExc.id === exc.id;
@@ -682,12 +853,20 @@ export const Step2Review: React.FC<Step2ReviewProps> = ({
 
                 {/* Right Lifecycle Indicator Badge */}
                 <div
+                  onClick={(e) => {
+                    if (!exc.isResolved) {
+                      e.stopPropagation();
+                      handleQuickVerifyOne(exc.id);
+                    }
+                  }}
+                  title={!exc.isResolved ? "Click to verify this exception" : "Verified & normalized"}
                   style={{
                     padding: "3px 8px",
                     borderRadius: "10px",
                     fontSize: "10.5px",
                     fontWeight: 700,
                     flexShrink: 0,
+                    cursor: !exc.isResolved ? "pointer" : "default",
                     backgroundColor: exc.isResolved
                       ? "#ECFDF5"
                       : exc.statusBadge === "Finding confirmed"
@@ -718,14 +897,14 @@ export const Step2Review: React.FC<Step2ReviewProps> = ({
                   }}
                 >
                   {exc.isResolved
-                    ? "Resolved"
+                    ? "✓ Resolved"
                     : exc.statusBadge === "Finding confirmed"
                       ? "Confirmed"
                       : exc.statusBadge === "Deviation accepted"
                         ? "Deviation"
                         : exc.statusBadge === "Clarification requested"
                           ? "Clarify"
-                          : "Pending"}
+                          : "Verify →"}
                 </div>
               </div>
             );
@@ -1545,6 +1724,31 @@ export const Step2Review: React.FC<Step2ReviewProps> = ({
 
         {/* Dynamic Contextual Action Button */}
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          {pendingCount > 0 && (
+            <button
+              onClick={handleBatchVerifyAll}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                backgroundColor: "#ECFDF5",
+                color: "#047857",
+                border: "1px solid #A7F3D0",
+                borderRadius: "8px",
+                padding: "9px 16px",
+                fontSize: "12.5px",
+                fontWeight: 700,
+                cursor: "pointer",
+                transition: "all 0.15s ease"
+              }}
+              onMouseEnter={e => (e.currentTarget.style.backgroundColor = "#D1FAE5")}
+              onMouseLeave={e => (e.currentTarget.style.backgroundColor = "#ECFDF5")}
+            >
+              <CheckCircle2 size={14} color="#059669" />
+              <span>Verify All Documents ({pendingCount})</span>
+            </button>
+          )}
+
           {activeExc.isResolved && (
             <button
               onClick={handleReopenForReview}
