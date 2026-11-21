@@ -98,8 +98,8 @@ def get_ingestion_status() -> Dict[str, Any]:
     }
 
 def generate_next_vendor_id(existing_ids: List[str]) -> str:
-    """Generates next available sequential Vendor ID, e.g. VEND-001 or VEND-006."""
-    max_idx = 0 if normalizer_engine.is_custom_mode else 5
+    """Generates next available sequential Vendor ID, e.g. VEND-006."""
+    max_idx = 5
     for vid in existing_ids:
         m = re.search(r"VEND-0*(\d+)", vid)
         if m:
@@ -113,18 +113,16 @@ async def upload_vendor_file(vendor_id: Optional[str] = None, file: UploadFile =
     """
     Dynamically receives, validates category integrity, and parses an uploaded supplier file.
     If category mismatch (e.g. Packaging, Furniture), cleanly halts and prompts the buyer.
-    When custom files are uploaded, default demo quotes are purged.
+    Retains the 5 benchmark vendors and appends the new vendor as an additional upload.
     """
     ext = os.path.splitext(file.filename)[1].lower()
     allowed_exts = [".xlsx", ".xls", ".pdf", ".docx", ".jpg", ".jpeg", ".png", ".eml", ".txt", ".csv", ".json", ".tsv"]
     if ext not in allowed_exts:
         raise HTTPException(status_code=400, detail=f"Unsupported format '{ext}'. Allowed: {allowed_exts}")
 
-    # If transitioning from default demo to custom uploaded quotes, clear defaults
-    if not normalizer_engine.is_custom_mode:
-        normalizer_engine.raw_quotes = {}
-        normalizer_engine.qualifications = {}
-        normalizer_engine.is_custom_mode = True
+    # Ensure baseline quotes are active so new upload is evaluated alongside them
+    if not normalizer_engine.raw_quotes:
+        normalizer_engine.ingest_all_vendors()
 
     # Determine assigned vendor ID
     assigned_v_id = vendor_id

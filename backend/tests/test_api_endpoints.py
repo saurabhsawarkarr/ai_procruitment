@@ -12,10 +12,10 @@ client = TestClient(app)
 
 print("--- Testing Complete API Endpoints Suite ---")
 
-# 1. Root
-r_root = client.get("/")
+# 1. Root / Health Check
+r_root = client.get("/api/health")
 assert r_root.status_code == 200
-print(f"1. Root Endpoint: Status {r_root.status_code} | Platform: {r_root.json()['platform']}")
+print(f"1. Health Endpoint: Status {r_root.status_code} | Platform: {r_root.json()['platform']}")
 
 # 2. Matrix
 r_matrix = client.get("/api/rfx/matrix")

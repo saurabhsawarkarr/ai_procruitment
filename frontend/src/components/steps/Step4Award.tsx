@@ -1112,6 +1112,7 @@ export const Step4Award: React.FC<Step4AwardProps> = ({
             </div>
           </div>
 
+          {/* 1. Baseline Spend Card */}
           <div
             style={{
               backgroundColor: "#F8FAFC",
@@ -1121,12 +1122,29 @@ export const Step4Award: React.FC<Step4AwardProps> = ({
               minWidth: "135px"
             }}
           >
-            <div style={{ fontSize: "11px", color: "#64748B", fontWeight: 600 }}>Recommended Spend</div>
-            <div style={{ fontSize: "19px", fontWeight: 800, color: "#0F172A", marginTop: "2px" }}>
+            <div style={{ fontSize: "11px", color: "#64748B", fontWeight: 600 }}>Baseline Spend</div>
+            <div style={{ fontSize: "19px", fontWeight: 800, color: "#475569", marginTop: "2px" }}>
+              {formatInrCr(baselineSpend)}
+            </div>
+          </div>
+
+          {/* 2. Recommended Spend Card */}
+          <div
+            style={{
+              backgroundColor: "#EFF6FF",
+              border: "1px solid #BFDBFE",
+              borderRadius: "10px",
+              padding: "10px 18px",
+              minWidth: "135px"
+            }}
+          >
+            <div style={{ fontSize: "11px", color: "#1D4ED8", fontWeight: 700 }}>Recommended Spend</div>
+            <div style={{ fontSize: "19px", fontWeight: 800, color: "#1E3A8A", marginTop: "2px" }}>
               {formatInrCr(totalSpend)}
             </div>
           </div>
 
+          {/* 3. Projected Savings Card */}
           <div
             style={{
               backgroundColor: "#F0FDF4",

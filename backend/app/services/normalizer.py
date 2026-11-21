@@ -217,12 +217,19 @@ class MasterNormalizationEngine:
 
         return self.raw_quotes
 
-    def add_custom_vendor(self, vendor_id: str, raw_quote: Dict[str, Any], vendor_profile: Optional[Dict[str, Any]] = None):
-        """Dynamically registers an uploaded vendor quote. When switching from default demo mode, purges default demo data so ONLY uploaded files remain."""
-        if not self.is_custom_mode:
+    def add_custom_vendor(self, vendor_id: str, raw_quote: Dict[str, Any], vendor_profile: Optional[Dict[str, Any]] = None, replace_all: bool = False):
+        """
+        Dynamically registers an uploaded vendor quote.
+        By default, retains the 5 benchmark vendors and appends the new vendor as an additional upload (e.g. Vendor 6).
+        If replace_all=True, purges benchmark quotes to isolate only custom quotes.
+        """
+        if replace_all:
             self.raw_quotes = {}
             self.qualifications = {}
             self.is_custom_mode = True
+        else:
+            if not self.raw_quotes:
+                self.ingest_all_vendors()
 
         v_name = raw_quote.get("vendor_name", vendor_id)
         raw_quote["vendor_id"] = vendor_id
