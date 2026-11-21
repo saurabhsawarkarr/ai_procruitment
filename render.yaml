@@ -1,8 +1,12 @@
 services:
   - type: web
     name: aerchain-procurement-mvp
-    env: docker
+    runtime: docker
     dockerfilePath: ./Dockerfile
     plan: free
     region: oregon
     autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 8000
+

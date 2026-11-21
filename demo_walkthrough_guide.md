@@ -1,88 +1,142 @@
-# Live Demo & Loom Walkthrough Script: "Kill the Quote Spreadsheet"
+# Live Demo & Loom Walkthrough Guide: "Kill the Quote Spreadsheet"
 
-**Goal**: Deliver a crisp, 3-to-4 minute executive product demo showcasing conversational RFx authoring, simulated multi-channel dispatch, autonomous quote ingestion, defensible AI exception reasoning, deterministic landed cost math, and conversational procurement intelligence.
-
----
-
-### Step 0: Conversational RFx Authoring & Omnichannel Dispatch (0:00 – 0:45)
-* **What to Show**: In the live application at `http://localhost:5173`, display **Step 0: Draft & Dispatch RFx**.
-  1. Point out the **Aera AI Sourcing Co-Pilot** on the left: show the buyer prompting Aera to draft the enterprise tender:
-     > *"Aera, draft an RFx for FY2026 Enterprise IT Hardware & Client Compute across our Bengaluru and Mumbai Tech Centers. Sourcing 30 SKUs: Ultrabooks, Enterprise Workstations, Displays, and Rack Servers. Sourcing rules: Delivery SLA ≤ 12 business days, DDP Incoterms, Net 45 payment terms, and our mandatory ISO 9001 qualification questionnaire with ≤ 2.0% defect rate. Budget benchmark is ₹17.90 Crore."*
-  2. Point out the **Right Pane (Drafted RFx Cockpit)**:
-     - Review the 30 SKU technical specifications categorized into Compute, Peripherals, and Infrastructure.
-     - Review the **Mandatory Qualification Questionnaire**: ISO 9001 certification + DoA defect rate ≤ 2.0%.
-     - Show the **Target 5 Vendors** and their respective transmission channels (Apex via EDI, CompuZone via Portal, National via SCM Gateway, Vardhman via WhatsApp/Mobile, and Balaji via SMTP Email).
-  3. Click **`[🚀 Dispatch RFx to 5 Vendors]`**:
-     - Watch the simulated multi-channel dispatch animation confirm delivery to all 5 suppliers.
-     - Click **`[Proceed to Step 1: Ingestion Hub ➔]`**.
-* **What to Say**:
-  > *"Procurement begins with conversational intent. Rather than filling rigid ERP forms, the buyer talks the tender into existence with Aera. The AI co-pilot compiles 30 SKU specifications, delivery SLAs, and qualification hurdles, then dispatches the tender across five supplier channels simultaneously."*
+**Assignment Deliverable 2**: *"A recorded walkthrough of the analyst conversation — you choose the questions worth asking."*  
+**Platform**: Aerchain Sourcing Ecosystem (**Aera AI + Evaluation Agent + Omnichannel Hub**)  
+**Benchmark**: ₹17.90 Crore ($2.15M) Direct Spend across 30 SKUs & 5 Heterogeneous Suppliers  
 
 ---
 
-### Step 1: Upload Quotes & The 5 Chaos Artifacts (0:45 – 1:30)
-* **What to Show**: On **Step 1: Upload Quotes**:
-  1. Point out the 5 pre-loaded chaotic vendor responses (exactly matching the assignment's 5 archetypes):
-     - `vendor_1_apex_quote.xlsx` (Multi-tab spreadsheet with combined dimensions and Ex-Works Bengaluru terms).
-     - `vendor_2_compuzone_quote.pdf` (Corporate letterhead PDF hiding a 4.5% rebate and 8% handling margin in 7pt Footnote #3 on Page 4).
-     - `vendor_3_national_quote.docx` (Narrative Word proposal with volume discount tiers).
-     - `vendor_4_vardhman_quote.jpg` (15° perspective-skewed mobile photo with blue pen handwriting and lines 28–30 blank).
-     - `vendor_5_balaji_quote.eml` (Casual email referencing historical 2025 contract with +3.5% currency indexation).
-  2. Demonstrate the **Upload Modal**: Highlight that the system supports uploading unseen quotations (e.g. `01_ltimindtree_enterprise_quote.xlsx`), extracting supplier ID, detecting commercial exceptions, and dynamically appending them to the comparison matrix while preserving the 5 benchmark suppliers.
-  3. Click **`[Proceed to Review & Exceptions ➔]`**.
-* **What to Say**:
-  > *"Suppliers respond in whatever format they have on hand. Instead of forcing vendors into rigid templates, our system ingests multi-tab spreadsheets, scanned PDFs with fine print, narrative Word proposals, smartphone photos, and casual emails with equal precision."*
+## Part I: Complete 4-Minute End-to-End Demo Script
+
+| Section | Timeline | Screen / Stage | Key Narration & Demonstration Action |
+| :--- | :---: | :--- | :--- |
+| **1. Ingestion Hub & Chaos Parsing** | 0:00 – 0:50 | **Stage 1: Upload & Extract Quotes** | Showcase the 5 unsolicited format archetypes (`.xlsx`, `.pdf`, `.docx`, `.jpg`, `.eml`) parsed across 30 SKUs. Demonstrate the dynamic file uploader. Click `[Proceed to Normalize & Verify ➔]`. |
+| **2. Trust Gate & Ambiguity Review** | 0:50 – 1:40 | **Stage 2: Normalize & Verify** | Walk through CompuZone Footnote #3 dual-scenario unbundling, Apex logistics normalization (+₹450/unit), National tech spec mismatch, Balaji contract indexation, and Vardhman 27/30 partial bid isolation. Click `[Proceed to Compare & Optimize ➔]`. |
+| **3. The Analyst Conversation** | 1:40 – 3:15 | **Stage 3: Compare & Optimize** | 65% TanStack Master Matrix + 35% Aera AI Copilot. Ask the 6 killer analyst questions below, triggering real-time HiGHS MILP optimization, dynamic tables, and visual bounding boxes. |
+| **4. Governance Sign-off & Audit Export** | 3:15 – 4:00 | **Stage 4: Award & Approval** | Verify the 3 reconciled KPI cards (₹17.90 Cr baseline, ₹14.07 Cr spend, ₹3.83 Cr / 21.4% savings). Open CPO Board Award Memorandum modal. Download reconciled Excel workbook. |
 
 ---
 
-### Step 2: Review Extracted Exceptions & Trust Gate (1:30 – 2:15)
-* **What to Show**: Advance to **Step 2 (Review & Exceptions)**:
-  1. **Exception 1 (CompuZone Footnote #3)**:
-     - Show the **Dual Scenario Normalization**:
-       - *Scenario A (Without Rebate)*: ₹1,08,000 baseline price.
-       - *Scenario B (If Spend > ₹1.5 Cr)*: ₹1,03,500.
-     - Highlight the warning badge: *"Handling amount requires confirmation of underlying actual cost (vendor states 'at actuals + 8% margin', not a flat rate)."*
-     - Click **`[Request Clarification]`** to demonstrate the pre-drafted RFP clarification email.
-  2. **Exception 2 (Apex Logistics Normalization)**:
-     - Show Ex-Works Bhiwandi terms normalized to DDP delivered (+₹450/unit).
-  3. **Exception 3 (National IT Technical Equivalence Check)**:
-     - Show how the AI detected generic PC pricing on high-end Apple MacBook Pro (SKU-003) and flagged technical disqualification to prevent delivery rejection.
-  4. **Exception 4 (Shree Balaji Commercial Unbundling)**:
-     - Show the contract baseline with +3.5% FX escalation and unbundled WD22TB4 docking stations.
-  5. **Exception 5 (Vardhman 16d SLA & Quality Failure)**:
-     - Show the +4 working days delivery delay breach and 27/30 partial bid quarantined to prevent false averages.
-  6. Click **`[Proceed to Compare & Optimize]`**.
-* **What to Say**:
-  > *"When ₹17.90 Crore is on the line, buyers cannot trust a black-box AI that hallucinates discounts. In Step 2, our system isolates commercial ambiguities in an audit-ready review cockpit with click-to-source bounding boxes and dual scenario normalization."*
+## Part II: The Analyst Conversation — The Questions Worth Asking (And Why)
+
+The assignment brief poses the core challenge:
+> *"Then the buyer stops clicking and starts asking. Natural language, over the whole comparison. Text answers, tables, charts, exports. Real analysis on real extracted data, all the way to a defensible award decision."*
+
+Here are the **6 questions worth asking**, why each tests deep procurement intelligence rather than generic chatbots, and what the system produces:
+
+```
+┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                 THE 6 KILLER ANALYST QUESTIONS                                   │
+├────┬───────────────────────────────────────────┬─────────────────────────────────────────────────┤
+│ #  │ Natural Language Prompt                   │ Why It's Worth Asking (The Procurement Test)    │
+├────┼───────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ 1  │ "Are there any unusually large price      │ Tests outlier detection: flags spec mismatches  │
+│    │ differences or commercial outliers?"      │ (generic PC vs workstation) & unbundled freight │
+├────┼───────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ 2  │ "What is the financial impact if          │ Tests footnote comprehension: models Scenario A │
+│    │ CompuZone's conditional rebate fails?"    │ vs B and unbundles hidden 8% handling charges   │
+├────┼───────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ 3  │ "What is the impact of excluding          │ Connects operational SLAs to optimization:      │
+│    │ suppliers with delivery times > 12 days?" │ calculates cost of delay vs nominal price delta │
+├────┼───────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ 4  │ "What is the cost difference between a    │ Evaluates sole-sourcing premium vs split-award: │
+│    │ single-supplier and split-supplier award?"│ proves why split-sourcing saves ₹1.41 Crore     │
+├────┼───────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ 5  │ "Why was Vardhman not awarded under       │ Proves audit defensibility: explains 16d SLA    │
+│    │ the strategic split?"                     │ breach & 27/30 partial bid quarantine           │
+├────┼───────────────────────────────────────────┼─────────────────────────────────────────────────┤
+│ 6  │ "Show lowest laptop quote across all      │ Instant domain synthesis: parses SKU categories │
+│    │ vendors"                                  │ and renders structured comparison table         │
+└────┴───────────────────────────────────────────┴─────────────────────────────────────────────────┘
+```
 
 ---
 
-### Step 3: Quote Analysis Master Matrix & Aera Optimization (2:15 – 3:15)
-* **What to Show**: On Screen 3 (**Compare & Optimize**):
-  1. Show the **Right Pane (65%)**: The 30 SKUs organized into tabs (`Client Compute & Laptops`, `Displays & Docks`, `Enterprise Infrastructure`) with baseline and target prices.
-  2. Point out the **Commercial Terms Footer** with unbundled logistics, taxes, and true landed TCO.
-  3. **Click any cell (CompuZone, SKU-001)**: The **SourceViewerDrawer** slides out displaying exact document bounding boxes and calculation waterfalls.
-  4. Switch to **Left Pane (35%) — Aera AI Copilot**:
-     - Click chip: `[Cheapest Line-by-Line]`: Evaluates unconstrained allocation across lowest individual rates, but Aera warns that unconstrained buying risks delivery SLAs and awards defective suppliers.
-     - Click chip: `[VP Constrained Split]`: The MILP solver optimizes binary assignment variables in under 200 ms, achieving **₹14.07 Cr Landed Spend (₹3.83 Cr / 21.4% net realized savings against the ₹17.90 Cr baseline)** while enforcing quality hurdles (defect rate ≤ 2.0%), ≤ 12-day lead times, and the ₹5 Lakh minimum supplier spend threshold.
-* **What to Say**:
-  > *"The Evaluation Agent normalizes all formats into an apples-to-apples cockpit. When the VP asks 'what if we split award by lowest landed cost, but only among vendors who passed quality audits and can deliver under 12 days?', our embedded MILP solver calculates the exact mathematical optimum in under 200 milliseconds. Vardhman is restricted based on our Step 2 decisions, and the solver guarantees no supplier receives an uneconomical sub-scale order."*
+### Question 1: Commercial Anomaly & Price Outlier Detection
+* **Prompt to Type / Click**:
+  > *"Are there any unusually large price differences or commercial outliers between vendors?"*
+* **Why It's Worth Asking**:  
+  Shallow procurement tools average prices. Sourcing intelligence finds where vendors misunderstood specs or forgot to include logistics. 
+* **What Aera Answers**:  
+  Renders a structured markdown table identifying the top 5 widest price spreads across the 30 SKUs:
+  - **Line 3 (Apple MacBook Pro M3 Max)**: 45.2% spread because National bid an entry-tier PC laptop instead of the requested workstation spec.
+  - **Line 5 (Dell Precision Workstation)**: High spread driven by missing GPU specifications.
+  - **Freight Discrepancies**: Highlights Ex-Works Bhiwandi quotes that required up to ₹1,500/unit freight equalization.
 
 ---
 
-### Step 4: Governance Sign-Off & Reconciled Financial Export (3:15 – 4:00)
-* **What to Show**: Click **`[Proceed to Award Recommendation ➔]`** on Screen 4:
-  1. Show the **3 Fully Reconciled Executive KPI Cards**:
-     - **Baseline Spend**: ₹17.90 Cr (`₹17,89,60,500.00`)
-     - **Recommended Spend**: ₹14.07 Cr (`₹14,06,99,590.00`)
-     - **Projected Savings**: ₹3.83 Cr (`₹38,260,910.00`, 21.4% Net Reduction)
-  2. Point out the **Supplier Allocation Schedule**:
-     - Apex Technology Solutions: 19 SKUs, ₹8.90 Cr (63.2%)
-     - National IT Systems: 4 SKUs, ₹2.56 Cr (18.2%)
-     - Shree Balaji Infotech: 7 SKUs, ₹2.61 Cr (18.6%)
-     - **Total**: 30 SKUs, ₹14.07 Cr (100.0%) — **Reconciles to the exact rupee**.
-  3. Show the **Detailed 30 SKU Schedule**: Summing the 30 rows matches ₹14.07 Cr spend and ₹3.83 Cr savings.
-  4. Click **`[Award Memo]`**: The modal opens displaying the formal **Executive Procurement Board Award Memorandum** complete with vendor allocation shares, qualification audit records, and digital signature sign-off blocks.
-  5. Click **`[Export Excel]`**: Generates an audit-ready Excel workbook with full reconciliation schedules.
-* **What to Say**:
-  > *"Procurement ends with an audit-ready, defensible governance memo. All financial calculations tie out across the dashboard: baseline, optimized spend, projected savings, supplier allocations, and line-item totals match to the exact rupee. We've replaced 4 days of clerical spreadsheet transcription with 4 minutes of autonomous, defensible intelligence."*
+### Question 2: The Footnote Ambush (Conditional Rebate Modeling)
+* **Prompt to Type / Click**:
+  > *"What is the financial impact if CompuZone's conditional rebate is not achieved?"*
+* **Why It's Worth Asking**:  
+  Tests whether the AI actually read 7pt footnotes or just scraped the main table. Evaluates whether the vendor's 4.5% rebate threshold (> ₹1.5 Cr spend) will be met.
+* **What Aera Answers**:  
+  Displays a dual-scenario financial comparison table:
+  - **Scenario A (Spend < ₹1.5 Cr)**: Base landed cost = ₹1,00,000/unit.
+  - **Scenario B (Spend > ₹1.5 Cr)**: Net landed cost = ₹95,500/unit (-₹4,500/unit net savings).
+  - **Strategic Takeaway**: Category compute volume is ₹6.47 Cr, easily crossing the ₹1.5 Cr threshold, mathematically guaranteeing ₹6.75L to ₹12.5L in bottom-line savings while disallowing unapproved 8% depot handling surcharges.
+
+---
+
+### Question 3: Delivery SLA Constraint & Operational Risk
+* **Prompt to Type / Click**:
+  > *"What is the impact of excluding suppliers with delivery times above 12 days?"*
+* **Why It's Worth Asking**:  
+  Standard Excel solvers minimize cost blindly, awarding orders to a vendor with a 16-day lead time that halts client delivery.
+* **What Aera Answers**:  
+  - Identifies **Vardhman Paper Products** with a **16-day lead time** (breaching the ≤ 12-day threshold).
+  - Evaluates live HiGHS solver spend: Strict 12-day SLA achieves **₹14.07 Cr spend (₹3.83 Cr net savings)** with 100% compliant delivery in 7–10 days.
+  - Warns that relaxing the SLA saves only a nominal ₹4.2 Lakhs in unit price while inducing an estimated **₹18.5 Lakhs in engineering idle-time losses**.
+
+---
+
+### Question 4: Sourcing Strategy Tradeoff (Single-Source vs. Split Award)
+* **Prompt to Type / Click**:
+  > *"What is the cost difference between a single-supplier and split-supplier award?"*
+* **Why It's Worth Asking**:  
+  Executive leadership always asks: *"Why can't we just give 100% of the volume to one vendor to simplify vendor management?"*
+* **What Aera Answers**:  
+  Aera computes the exact delta in real time:
+  - **Single Source (Apex Technology Solutions)**: ₹15.48 Cr (₹2.41 Cr / 13.5% savings).
+  - **Strategic Split (Apex + National + Balaji)**: ₹14.07 Cr (₹3.83 Cr / 21.4% savings).
+  - **Executive Bottom Line**: Sole-sourcing carries a **+₹1.41 Crore premium (+10.1% cost penalty)** because no single supplier is cheapest across Compute, Displays, and Infrastructure.
+
+---
+
+### Question 5: Defensible Supplier Disqualification
+* **Prompt to Type / Click**:
+  > *"Why was Vardhman not awarded under the strategic split?"*
+* **Why It's Worth Asking**:  
+  Auditors demand to know why a vendor was bypassed. The answer must be factually anchored in the raw file.
+* **What Aera Answers**:  
+  Provides a 3-point audit-ready justification:
+  1. **Delivery SLA Breach**: Quoted 16 calendar days vs. enterprise requirement of ≤ 12 days.
+  2. **Incomplete Bid (27/30 SKUs)**: Omitted Lines 28–30 (Dual 100GbE NICs, Fibre Channel HBAs), quarantined to prevent distorted single-source averages.
+  3. **Quality Risk**: 2.4% historical defect rate exceeding the mandatory 2.0% qualification ceiling.
+
+---
+
+### Question 6: Natural Language Category Deep Dive
+* **Prompt to Type / Click**:
+  > *"Show lowest laptop quote across all vendors"*
+* **Why It's Worth Asking**:  
+  Demonstrates that the copilot understands product taxonomy and immediately renders a clean markdown comparison table with click-to-source grounding.
+* **What Aera Answers**:  
+  Generates a clean comparison table for all 5 enterprise laptop SKUs (Ultrabook Core Ultra 7, Developer Mobile Workstation, MacBook Pro M3 Max, Rugged Field Laptop, Executive Ultra-Lightweight), highlighting lowest rates and delivery lead times.
+
+---
+
+## Part III: Recording the Loom Video (Step-by-Step Practical Setup)
+
+1. **Pre-Flight Preparation**:
+   - Start the prototype using `.\start_prototype.bat` (or open your live public URL).
+   - Open browser at `http://localhost:5173`.
+   - Have the Swagger API documentation open in a second tab at `http://localhost:8000/docs` to demonstrate backend rigor.
+2. **Recording Setup**:
+   - Resolution: 1080p Full Screen.
+   - Target Duration: **3:30 to 4:00 minutes**.
+3. **Execution Flow**:
+   - **Minute 0:00 - 0:50**: Stage 1: Upload & Extract Quotes (Show 5 chaotic vendor files in Ingestion Hub, demo dynamic file uploader).
+   - **Minute 0:50 - 1:40**: Stage 2: Normalize & Verify (Review exceptions, show CompuZone Footnote #3 unbundling, Apex freight normalization, and Vardhman partial bid isolation).
+   - **Minute 1:40 - 3:15**: Stage 3: Compare & Optimize (Master Matrix & Aera Copilot: click cells for visual bounding boxes, ask 3 of the killer questions above, switch scenarios).
+   - **Minute 3:15 - 4:00**: Stage 4: Award & Approval (Show 100% reconciled KPI cards, open Board Award Memo, export Excel workbook).

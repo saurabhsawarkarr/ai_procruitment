@@ -550,16 +550,15 @@ def _dispatch_chat(
 
     # Impact of excluding suppliers with delivery times above 12 days
     if ("exclude" in query or "above 12" in query or "12 days" in query or "delivery sla" in query) and ("lead time" in query or "delivery" in query or "sla" in query or "turnaround" in query or "compliance" in query or "comply" in query):
-        sol_12 = solve_split_award(scenario_type="vp_constrained_split", max_lead_time_days=12)
-        sol_unconstrained = solve_split_award(scenario_type="unconstrained_lowest")
-
-        spend_12_cr = sol_12["total_spend_inr"] / 10000000
-        sav_12_cr = sol_12["net_savings_inr"] / 10000000
-        spend_uncon_cr = sol_unconstrained["total_spend_inr"] / 10000000
-        delta_lakhs = (sol_12["total_spend_inr"] - sol_unconstrained["total_spend_inr"]) / 100000
-
         breach_vendors = [v for v in vendors.values() if v.get("lead_time_days", 10) > 12]
         if breach_vendors:
+            sol_12 = solve_split_award(scenario_type="vp_constrained_split", max_lead_time_days=12)
+            sol_unconstrained = solve_split_award(scenario_type="unconstrained_lowest")
+
+            spend_12_cr = sol_12["total_spend_inr"] / 10000000
+            sav_12_cr = sol_12["net_savings_inr"] / 10000000
+            spend_uncon_cr = sol_unconstrained["total_spend_inr"] / 10000000
+            delta_lakhs = (sol_12["total_spend_inr"] - sol_unconstrained["total_spend_inr"]) / 100000
             breach_name = breach_vendors[0]["vendor_name"]
             breach_days = breach_vendors[0]["lead_time_days"]
             return ChatResponse(

@@ -146,7 +146,7 @@ def solve_split_award(
             for i, r in enumerate(rows):
                 demand = r["annual_volume"]
                 q = r["quotes"].get(vendors[v], {})
-                cost = q.get("landed_cost_unit_inr", 0.0) if q.get("is_bid_present") else 0.0
+                cost = (q.get("landed_cost_unit_inr") or 0.0) if q.get("is_bid_present") else 0.0
                 row[x_idx(i, v)] = demand * cost
             row[y_idx(v)] = -min_vendor_spend_inr
             A_rows.append(row)
@@ -238,7 +238,7 @@ def solve_split_award(
             if sol_x[x_idx(i, v)] > 0.5:
                 v_name = normalizer_engine.raw_quotes[v_id]["vendor_name"]
                 q = r["quotes"].get(v_id, {})
-                unit_price = q.get("landed_cost_unit_inr", 0.0)
+                unit_price = q.get("landed_cost_unit_inr") or 0.0
                 item_spend = unit_price * demand
                 item_savings = base_item_spend - item_spend
 
