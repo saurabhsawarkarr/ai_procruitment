@@ -456,54 +456,42 @@ export function App() {
   };
 
   const handleAddSupplier = (newSupplier: SupplierRow, newException: ExceptionData) => {
-    if (!isCustomMode) {
-      // When files are uploaded, default data is gone!
-      setIsCustomMode(true);
-      setSuppliers([newSupplier]);
-      setExceptions([{ ...newException, exceptionNumber: 1 }]);
-    } else {
-      setSuppliers(prev => {
-        const filtered = prev.filter(s => s.file !== newSupplier.file);
-        return [newSupplier, ...filtered];
-      });
+    // Append the newly uploaded supplier to the active supplier list
+    setSuppliers(prev => {
+      const remaining = prev.filter(s => s.file !== newSupplier.file && s.name !== newSupplier.name);
+      return [...remaining, newSupplier];
+    });
 
-      setExceptions(prev => {
-        const filtered = prev.filter(e => e.sourceDocName !== newException.sourceDocName);
-        const combined = [newException, ...filtered];
-        return combined.map((exc, idx) => ({
-          ...exc,
-          exceptionNumber: idx + 1
-        }));
-      });
-    }
+    setExceptions(prev => {
+      const remaining = prev.filter(e => e.sourceDocName !== newException.sourceDocName);
+      const combined = [...remaining, newException];
+      return combined.map((exc, idx) => ({
+        ...exc,
+        exceptionNumber: idx + 1
+      }));
+    });
 
     setSelectedExceptionId(newException.id);
     loadData();
   };
 
   const handleAddSuppliersBatch = (newSuppliers: SupplierRow[], newExceptions: ExceptionData[]) => {
-    if (!isCustomMode) {
-      // When files are uploaded, default data is gone!
-      setIsCustomMode(true);
-      setSuppliers(newSuppliers);
-      setExceptions(newExceptions.map((exc, idx) => ({ ...exc, exceptionNumber: idx + 1 })));
-    } else {
-      setSuppliers(prev => {
-        const newFiles = new Set(newSuppliers.map(s => s.file));
-        const remaining = prev.filter(s => !newFiles.has(s.file));
-        return [...newSuppliers, ...remaining];
-      });
+    // Append the newly uploaded batch of suppliers to the active supplier list
+    setSuppliers(prev => {
+      const newFiles = new Set(newSuppliers.map(s => s.file));
+      const remaining = prev.filter(s => !newFiles.has(s.file));
+      return [...remaining, ...newSuppliers];
+    });
 
-      setExceptions(prev => {
-        const newDocNames = new Set(newExceptions.map(e => e.sourceDocName));
-        const remaining = prev.filter(e => !newDocNames.has(e.sourceDocName));
-        const combined = [...newExceptions, ...remaining];
-        return combined.map((exc, idx) => ({
-          ...exc,
-          exceptionNumber: idx + 1
-        }));
-      });
-    }
+    setExceptions(prev => {
+      const newDocNames = new Set(newExceptions.map(e => e.sourceDocName));
+      const remaining = prev.filter(e => !newDocNames.has(e.sourceDocName));
+      const combined = [...remaining, ...newExceptions];
+      return combined.map((exc, idx) => ({
+        ...exc,
+        exceptionNumber: idx + 1
+      }));
+    });
 
     if (newExceptions.length > 0) {
       setSelectedExceptionId(newExceptions[0].id);

@@ -201,16 +201,14 @@ async def upload_batch_files(files: List[UploadFile] = File(...)) -> Dict[str, A
     """
     Receives and parses multiple vendor quotation files simultaneously.
     Auto-detects supplier channel, validates category guardrails, and updates matrix in batch.
-    Purges default demo benchmark data when custom files are uploaded.
+    Retains existing vendors and appends newly uploaded custom vendors dynamically.
     """
     results = []
     category_mismatches = []
 
-    # If first time uploading custom files, clear out the 5 default demo quotes!
-    if not normalizer_engine.is_custom_mode:
-        normalizer_engine.raw_quotes = {}
-        normalizer_engine.qualifications = {}
-        normalizer_engine.is_custom_mode = True
+    # Ensure baseline quotes are loaded so custom quotes are evaluated alongside or added to them
+    if not normalizer_engine.raw_quotes:
+        normalizer_engine.ingest_all_vendors()
 
     for file in files:
         ext = os.path.splitext(file.filename)[1].lower()
@@ -244,22 +242,41 @@ async def upload_batch_files(files: List[UploadFile] = File(...)) -> Dict[str, A
                 "detected_category": det_category,
                 "message": f"Belongs to '{det_category}', not IT hardware."
             })
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
             continue
 
-        # Determine vendor ID
+        # Determine vendor ID (e.g. VEND-006, VEND-007)
         v_id = generate_next_vendor_id(list(normalizer_engine.raw_quotes.keys()))
         target_path = os.path.join(DATASET_DIR, f"upload_{v_id}_{file.filename}")
         shutil.move(temp_path, target_path)
 
-        # Parse using universal or canonical
-        parsed = parse_arbitrary_packaging_file(target_path, v_id)
-        normalizer_engine.add_custom_vendor(v_id, parsed)
+        # Check if this matches one of the canonical 5 benchmark files
+        fname_clean = file.filename.lower()
+        parsed = None
+        if "vendor_1_apex" in fname_clean and ext in [".xlsx", ".xls"]:
+            parsed = parse_apex_excel(target_path)
+        elif ("vendor_2_compuzone" in fname_clean or "vendor_2_corrupack" in fname_clean or "compuzone" in fname_clean) and ext == ".pdf":
+            parsed = parse_corrupack_pdf(target_path)
+        elif "vendor_3_national" in fname_clean and ext == ".docx":
+            parsed = parse_national_docx(target_path)
+        elif "vendor_4_vardhman" in fname_clean and ext in [".jpg", ".jpeg", ".png"]:
+            parsed = parse_vardhman_photo(target_path)
+        elif "vendor_5_balaji" in fname_clean and ext in [".eml", ".txt"]:
+            parsed = parse_balaji_email(target_path, RFX_SPEC_PATH, CONTRACT_BASELINE_PATH)
+        else:
+            # Universal Adaptive Parser for any custom quotation file
+            parsed = parse_arbitrary_packaging_file(target_path, v_id)
 
+        parsed["vendor_id"] = v_id
+        normalizer_engine.add_custom_vendor(v_id, parsed, replace_all=False)
+
+        lines_quoted = parsed.get("lines_quoted_count", len([i for i in parsed.get("items", []) if i.get("is_bid_present")]))
         results.append({
             "file_name": file.filename,
             "vendor_id": v_id,
             "vendor_name": parsed.get("vendor_name", v_id),
-            "lines_quoted": parsed.get("lines_quoted_count", 30),
+            "lines_quoted": lines_quoted,
             "status": "SUCCESS"
         })
 

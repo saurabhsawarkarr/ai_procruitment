@@ -135,35 +135,37 @@ export const Step3Analysis: React.FC<Step3AnalysisProps> = ({
       .trim() || rawName;
   };
 
-  // Dynamic Vendors extracted from live matrix data or fallback to canonical 5
+  // Dynamic Vendors extracted from live matrix data (reflects both benchmark and any newly uploaded vendors)
   const dynamicVendors = React.useMemo(() => {
-    if (isCustomMode && matrixData && matrixData.rows && matrixData.rows.length > 0) {
+    if (matrixData && matrixData.rows && matrixData.rows.length > 0) {
       const allVIds = new Set<string>();
       matrixData.rows.forEach((r: any) => {
         if (r.quotes) {
           Object.keys(r.quotes).forEach(vid => allVIds.add(vid));
         }
       });
-      return Array.from(allVIds).map(vId => {
-        const prof = (vendorProfiles && vendorProfiles[vId]) || (matrixData.vendor_profiles && matrixData.vendor_profiles[vId]) || {};
-        const firstQuote = matrixData.rows[0]?.quotes?.[vId] || {};
-        const rawName = prof.vendor_name || firstQuote.vendor_name || vId;
-        const name = cleanVendorName(rawName);
-        const isDisqualified = prof.audit_status === "DISQUALIFIED" || (prof.lead_time_days && prof.lead_time_days > 12) || prof.quality_questionnaire_status === "Failed / pending";
-        return {
-          id: vId,
-          name: name,
-          isDisqualified: isDisqualified,
-          statusBadge: isDisqualified ? "SLA ✗" : (prof.incoterms ? `${prof.incoterms.split(" ")[0]}` : "DDP"),
-          badgeColor: isDisqualified ? "#DC2626" : "#2563EB",
-          qualityStatus: prof.quality_questionnaire_status || "Passed",
-          qualityScore: prof.quality_score || 90
-        };
-      });
+      if (allVIds.size > 0) {
+        return Array.from(allVIds).map(vId => {
+          const prof = (vendorProfiles && vendorProfiles[vId]) || (matrixData.vendor_profiles && matrixData.vendor_profiles[vId]) || {};
+          const firstQuote = matrixData.rows[0]?.quotes?.[vId] || {};
+          const rawName = prof.vendor_name || firstQuote.vendor_name || vId;
+          const name = cleanVendorName(rawName);
+          const isDisqualified = prof.audit_status === "DISQUALIFIED" || (prof.lead_time_days && prof.lead_time_days > 12) || prof.quality_questionnaire_status === "Failed / pending";
+          return {
+            id: vId,
+            name: name,
+            isDisqualified: isDisqualified,
+            statusBadge: isDisqualified ? "SLA ✗" : (prof.incoterms ? `${prof.incoterms.split(" ")[0]}` : "DDP"),
+            badgeColor: isDisqualified ? "#DC2626" : "#2563EB",
+            qualityStatus: prof.quality_questionnaire_status || "Passed",
+            qualityScore: prof.quality_score || 90
+          };
+        });
+      }
     }
     // Main demo strictly displays 5 canonical vendors
     return canonical5Vendors;
-  }, [matrixData, vendorProfiles, isCustomMode]);
+  }, [matrixData, vendorProfiles]);
 
   const isAwarded = (skuLine: number, vendorId: string) => {
     if (!scenarioResult || !scenarioResult.line_allocations) return false;

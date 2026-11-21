@@ -1151,13 +1151,6 @@ export const Step1Ingestion: React.FC<Step1IngestionProps> = ({
   const processUploadedFiles = async (files: File[]) => {
     showToast(`Uploading and analyzing ${files.length} quotation file(s)...`);
 
-    // Call backend batch upload in parallel
-    try {
-      await uploadBatchFiles(files);
-    } catch (err) {
-      console.warn("Upload API call warning:", err);
-    }
-
     const newSupplierRows: SupplierRow[] = [];
     const newExceptions: ExceptionData[] = [];
 
@@ -1213,8 +1206,6 @@ export const Step1Ingestion: React.FC<Step1IngestionProps> = ({
       }
 
       // Intelligent status detection:
-      // Structured digital files (Excel, Vector PDF, Word, CSV, Email, JSON, TSV) are automatically "Processed" (Green).
-      // Physical scans/photos (jpg, jpeg, png) or partial line bids require human verification and get "Needs review" (Orange/Yellow).
       const isScan =
         ["jpg", "jpeg", "png"].includes(ext || "") ||
         lower.includes("scan") ||
@@ -1254,14 +1245,21 @@ export const Step1Ingestion: React.FC<Step1IngestionProps> = ({
       newExceptions.push(newException);
     });
 
-    // Atomic batch addition to App.tsx
+    // 1. Immediately render in UI (0ms instant optimistic update)
     if (onAddSuppliersBatch) {
       onAddSuppliersBatch(newSupplierRows, newExceptions);
     } else {
       newSupplierRows.forEach((row, i) => onAddSupplier(row, newExceptions[i]));
     }
 
-    showToast(`Parsed ${files.length} quote(s)! Step 2 Exceptions updated with itemized analyses.`);
+    // 2. Call backend batch upload in background
+    try {
+      await uploadBatchFiles(files);
+      showToast(`Parsed ${files.length} quotation file(s)! Comparison matrix updated.`);
+    } catch (err) {
+      console.warn("Upload API call warning:", err);
+    }
+
     if (onRefreshData) onRefreshData();
   };
 
