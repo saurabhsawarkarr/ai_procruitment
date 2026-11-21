@@ -707,7 +707,7 @@ def _dispatch_chat(
 
     # CompuZone conditional rebate impact or general rebate query
     if ("compuzone" in query and ("rebate" in query or "threshold" in query or "conditional" in query or "not achieved" in query or "footnote" in query or "impact" in query)) or ("rebate" in query and "conditional" in query):
-        has_compuzone = "VEND-002" in vendors or any("compuzone" in v["vendor_name"].lower() for v in vendors.values())
+        has_compuzone = any("compuzone" in v["vendor_name"].lower() for v in vendors.values()) or (not is_custom_mode and "VEND-002" in vendors)
 
         if "compuzone" in query and not has_compuzone:
             v_names = ", ".join(v["vendor_name"] for v in vendors.values())

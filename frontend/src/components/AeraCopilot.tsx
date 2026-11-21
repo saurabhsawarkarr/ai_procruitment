@@ -498,10 +498,7 @@ export const AeraCopilot: React.FC<AeraCopilotProps> = ({
     return list;
   }, [activeVendors, apiSampleQuestions, matrixData, vendorProfiles, isCustomMode]);
 
-  const [messages, setMessages] = useState<AeraMessage[]>([]);
-
-  // Dynamically initialize greeting on mount or when suppliers/scenarios change
-  useEffect(() => {
+  const buildGreetingMessage = (): AeraMessage => {
     const spendCr = currentSpend > 0 ? (currentSpend / 10000000).toFixed(2) : "15.78";
     const savCr = currentSavings > 0 ? (currentSavings / 10000000).toFixed(2) : "2.12";
     const totalRef = currentSpend + currentSavings;
@@ -512,30 +509,30 @@ export const AeraCopilot: React.FC<AeraCopilotProps> = ({
       ? `Hello! I am **Aera**, your autonomous sourcing copilot. I have analyzed all **${activeVendors.length} uploaded supplier quotation(s)** across the 30 Enterprise IT Hardware SKUs.\n\n• **Active Uploaded Suppliers**: ${vNames}\n• **Optimized Strategic Spend**: **₹${spendCr} Cr** (**+₹${savCr} Cr / ${savPct}% Net Savings**)\n• **Constraints Verified**: Delivery SLAs (≤ 12d), DDP parity normalization, and Tier-1 quality standards.\n\nAsk me anything about your uploaded quotes, specific SKU rates, vendor comparisons, or scenario what-ifs!`
       : `Hello! I am **Aera**, your autonomous sourcing copilot. I have analyzed all **${activeVendors.length} supplier bids** across 30 enterprise IT hardware SKUs.\n\n• **Active Suppliers**: ${vNames}\n• **Optimized Strategic Spend**: **₹${spendCr} Cr** (**+₹${savCr} Cr / ${savPct}% Net Savings**)\n• **Sourcing Integrity**: Ex-Works terms normalized to DDP equivalent; 12-day delivery SLA strictly verified.\n\nAsk me anything about your quotes, specific SKU lines, commercial terms, or optimization scenarios!`;
 
-    setMessages(prev => {
-      if (prev.length > 1) {
-        return prev;
+    return {
+      id: "1",
+      sender: "aera",
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      text: introText,
+      scenarioTag: activeScenario,
+      metrics: {
+        totalSpend: `₹${spendCr} Cr`,
+        netSavings: `+₹${savCr} Cr`,
+        savingsPct: `${savPct}%`
+      },
+      grounding: {
+        is_grounded: true,
+        grounding_score: 1.0,
+        status_badge: "100% Grounded in RFx Master Matrix"
       }
-      return [
-        {
-          id: "1",
-          sender: "aera",
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          text: introText,
-          scenarioTag: activeScenario,
-          metrics: {
-            totalSpend: `₹${spendCr} Cr`,
-            netSavings: `+₹${savCr} Cr`,
-            savingsPct: `${savPct}%`
-          },
-          grounding: {
-            is_grounded: true,
-            grounding_score: 1.0,
-            status_badge: "100% Grounded in RFx Master Matrix"
-          }
-        }
-      ];
-    });
+    };
+  };
+
+  const [messages, setMessages] = useState<AeraMessage[]>([]);
+
+  // Dynamically initialize greeting on mount or when suppliers/scenarios change - do not retain old answers
+  useEffect(() => {
+    setMessages([buildGreetingMessage()]);
   }, [isCustomMode, activeVendors.length]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -569,34 +566,7 @@ export const AeraCopilot: React.FC<AeraCopilotProps> = ({
   };
 
   const handleResetChat = () => {
-    const spendCr = currentSpend > 0 ? (currentSpend / 10000000).toFixed(2) : "15.78";
-    const savCr = currentSavings > 0 ? (currentSavings / 10000000).toFixed(2) : "2.12";
-    const totalRef = currentSpend + currentSavings;
-    const savPct = totalRef > 0 ? ((currentSavings / totalRef) * 100).toFixed(1) : "11.8";
-    const vNames = activeVendors.map(v => v.name).join(", ");
-    const introText = isCustomMode
-      ? `Hello! I am **Aera**, your autonomous sourcing copilot. I have analyzed all **${activeVendors.length} uploaded supplier quotation(s)** across the 30 Enterprise IT Hardware SKUs.\n\n• **Active Uploaded Suppliers**: ${vNames}\n• **Optimized Strategic Spend**: **₹${spendCr} Cr** (**+₹${savCr} Cr / ${savPct}% Net Savings**)\n• **Constraints Verified**: Delivery SLAs (≤ 12d), DDP parity normalization, and Tier-1 quality standards.\n\nAsk me anything about your uploaded quotes, specific SKU rates, vendor comparisons, or scenario what-ifs!`
-      : `Hello! I am **Aera**, your autonomous sourcing copilot. I have analyzed all **${activeVendors.length} supplier bids** across 30 enterprise IT hardware SKUs.\n\n• **Active Suppliers**: ${vNames}\n• **Optimized Strategic Spend**: **₹${spendCr} Cr** (**+₹${savCr} Cr / ${savPct}% Net Savings**)\n• **Sourcing Integrity**: Ex-Works terms normalized to DDP equivalent; 12-day delivery SLA strictly verified.\n\nAsk me anything about your quotes, specific SKU lines, commercial terms, or optimization scenarios!`;
-
-    setMessages([
-      {
-        id: "1",
-        sender: "aera",
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        text: introText,
-        scenarioTag: activeScenario,
-        metrics: {
-          totalSpend: `₹${spendCr} Cr`,
-          netSavings: `+₹${savCr} Cr`,
-          savingsPct: `${savPct}%`
-        },
-        grounding: {
-          is_grounded: true,
-          grounding_score: 1.0,
-          status_badge: "100% Grounded in RFx Master Matrix"
-        }
-      }
-    ]);
+    setMessages([buildGreetingMessage()]);
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = 0;
     }
@@ -612,7 +582,9 @@ export const AeraCopilot: React.FC<AeraCopilotProps> = ({
       text: promptText
     };
 
-    setMessages(prev => [...prev, userMsg]);
+    const greetingMsg = buildGreetingMessage();
+    // Do not show old answers: replace previous Q&A turns with the current question
+    setMessages([greetingMsg, userMsg]);
     setInputVal("");
     setLoading(true);
 
@@ -635,7 +607,8 @@ export const AeraCopilot: React.FC<AeraCopilotProps> = ({
           actionChips: apiRes.action_chips,
           grounding: apiRes.grounding
         };
-        setMessages(prev => [...prev, aeraReply]);
+        // Show ONLY the current answer for this question
+        setMessages([greetingMsg, userMsg, aeraReply]);
         setLoading(false);
         return;
       }
@@ -657,8 +630,10 @@ export const AeraCopilot: React.FC<AeraCopilotProps> = ({
         onSelectScenario(scenarioTrigger);
       }
 
-      setMessages(prev => [
-        ...prev,
+      // Show ONLY the current answer for this question
+      setMessages([
+        greetingMsg,
+        userMsg,
         {
           id: (Date.now() + 1).toString(),
           sender: "aera",
