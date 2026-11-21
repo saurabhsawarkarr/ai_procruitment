@@ -19,11 +19,6 @@ const formatInrCr = (val: number) => {
 };
 
 const stageInfo: Record<number, { title: string; subtitle: string; tag: string }> = {
-  0: {
-    title: "0. Draft & Dispatch RFx",
-    subtitle: "Conversational Scope Definition, 30 SKU Specifications & Multi-Vendor Dispatch",
-    tag: "RFx Co-Pilot"
-  },
   1: {
     title: "1. Upload & Extract Quotes",
     subtitle: "Multi-Format Parsing, Line Item Extraction & Commercial Term Detection",

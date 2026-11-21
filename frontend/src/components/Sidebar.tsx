@@ -173,7 +173,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 border: "1px solid #BFDBFE"
               }}
             >
-              {currentStep === 0 ? "Initiation" : `Stage ${currentStep}/4`}
+              {`Stage ${currentStep}/4`}
             </span>
           </div>
 

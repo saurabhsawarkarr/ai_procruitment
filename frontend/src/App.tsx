@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Sidebar } from "./components/Sidebar";
 import { StepNavigationHeader } from "./components/StepNavigationHeader";
-import { Step0RfxCreation } from "./components/steps/Step0RfxCreation";
 import { Step1Ingestion } from "./components/steps/Step1Ingestion";
 import { Step2Review } from "./components/steps/Step2Review";
 import { Step3Analysis } from "./components/steps/Step3Analysis";
@@ -377,8 +376,8 @@ const initialExceptions: ExceptionData[] = [
 ];
 
 export function App() {
-  // 5-Step Sourcing Workflow (Step 0: Author RFx ➔ Step 1: Ingest ➔ Step 2: Normalize ➔ Step 3: Optimize ➔ Step 4: Award)
-  const [currentStep, setCurrentStep] = useState<number>(0);
+  // 4-Step Sourcing Workflow (Step 1: Collect / Ingest ➔ Step 2: Verify / Normalize ➔ Step 3: Optimize / Compare ➔ Step 4: Approve / Award)
+  const [currentStep, setCurrentStep] = useState<number>(1);
 
   // Custom Upload Mode (false = showing default demo dataset, true = default demo purged, showing only uploaded files)
   const [isCustomMode, setIsCustomMode] = useState<boolean>(false);
@@ -598,15 +597,8 @@ export function App() {
           baselineSpend={baselineSpend}
         />
 
-        {/* View Router for Step 0 ➔ Step 1 ➔ Step 2 ➔ Step 3 ➔ Step 4 */}
+        {/* View Router for Step 1 ➔ Step 2 ➔ Step 3 ➔ Step 4 */}
         <div style={{ flex: 1, minHeight: 0, overflowY: "auto", position: "relative" }}>
-          {/* Step 0: Author / Draft & Dispatch RFx */}
-          {currentStep === 0 && (
-            <Step0RfxCreation
-              onProceedToIngest={() => setCurrentStep(1)}
-            />
-          )}
-
           {/* Step 1: Collect / Supplier Quotations */}
           {currentStep === 1 && (
             <Step1Ingestion
